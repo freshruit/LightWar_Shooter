@@ -3,6 +3,7 @@ import math
 # Настройки игры
 WIDTH = 1200
 HEIGHT = 800
+SIZE = WIDTH, HEIGHT
 HALF_WIDTH = WIDTH // 2
 HALF_HEIGHT = HEIGHT // 2
 PENTA_HEIGHT = 5 * HEIGHT

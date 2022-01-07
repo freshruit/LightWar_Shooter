@@ -6,7 +6,6 @@ from map import *
 from collections import *
 
 pygame.init()
-SIZE = WIDTH, HEIGHT
 screen = pygame.display.set_mode(SIZE)
 screen_map = pygame.Surface(MINIMAP_RES)
 pygame.display.set_caption('Light War')
@@ -80,8 +79,9 @@ class Drawing:
     def mini_map(self, player):
         self.screen_map.fill(BLACK)
         map_x, map_y = player.x // MAP_SCALE, player.y // MAP_SCALE
-        pygame.draw.line(self.screen_map, YELLOW, (map_x, map_y), (map_x + 12 * math.cos(player.angle),
-                                                               map_y + 12 * math.sin(player.angle)), 2)
+        pygame.draw.line(self.screen_map, YELLOW, (map_x, map_y),
+                         (map_x + 12 * math.cos(player.angle),
+                          map_y + 12 * math.sin(player.angle)), 2)
         pygame.draw.circle(self.screen_map, RED, (int(map_x), int(map_y)), 5)
         for x, y in mini_map:
             pygame.draw.rect(self.screen_map, DARKBROWN, (x, y, MAP_TILE, MAP_TILE))
@@ -175,6 +175,5 @@ class Drawing:
                 if mouse_click[0]:
                     pygame.quit()
                     sys.exit()
-
             pygame.display.flip()
             self.clock.tick(20)
