@@ -1,34 +1,34 @@
-import pygame
-from settings import *
-from player import Player
-from drawing import Drawing
+from player import *
+from sprite_objects import *
+from drawing import *
+from interaction import *
 
 
 def main():
-    pygame.init()
-    pygame.display.set_caption('Light War')
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    screen_map = pygame.Surface((WIDTH // MAP_SCALE, HEIGHT // MAP_SCALE))
-
-    player = Player()
-    drawing = Drawing(screen, screen_map)
+    sprites = Sprites()
     clock = pygame.time.Clock()
-    running = True
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
+    player = Player(sprites)
+    drawing = Drawing(screen, screen_map, player, clock)
+    drawing.menu()
+    interaction = Interaction(player, sprites, drawing)
+    interaction.play_music()
+    pygame.mouse.set_visible(False)
+    while True:
         player.movement()
-        screen.fill((0, 0, 0))
+        drawing.background(player.angle)
+        walls, wall_shot = ray_casting_walls(player, drawing.textures)
+        drawing.world(walls + [obj.object_locate(player) for obj in sprites.list_of_objects])
+        drawing.fps(clock)
+        drawing.mini_map(player)
+        drawing.player_weapon([wall_shot, sprites.sprite_shot])
 
-        drawing.draw_background()
-        drawing.visualize_world(player.position, player.angle)
-        drawing.display_fps(clock)
-        drawing.make_min_map(player)
+        interaction.interaction_objects()
+        interaction.npc_action()
+        interaction.clear_world()
+        interaction.check_win()
 
-        clock.tick()
         pygame.display.flip()
-    pygame.quit()
+        clock.tick()
 
 
 if __name__ == '__main__':
