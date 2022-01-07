@@ -10,7 +10,7 @@ def main():
     player = Player(sprites)
     drawing = Drawing(screen, screen_map, player, clock)
     drawing.menu()
-    interaction = Interaction(player, sprites, drawing)
+    interaction = Interaction(player, sprites, drawing, screen)
     interaction.play_music()
     pygame.mouse.set_visible(False)
     while True:

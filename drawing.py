@@ -73,7 +73,7 @@ class Drawing:
 
     def fps(self, clock):
         display_fps = str(int(clock.get_fps()))
-        render = self.font.render(display_fps, False, DARKORANGE)
+        render = self.font.render(f"FPS:{display_fps}", False, DARKORANGE)
         self.screen.blit(render, FPS_POS)
 
     def mini_map(self, player):

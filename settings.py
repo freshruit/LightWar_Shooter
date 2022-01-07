@@ -10,7 +10,7 @@ PENTA_HEIGHT = 5 * HEIGHT
 DOUBLE_HEIGHT = 2 * HEIGHT
 FPS = 60
 TILE = 100
-FPS_POS = (WIDTH - 65, 5)
+FPS_POS = (WIDTH - 150, 5)
 
 # Настройки мини-карты
 MINIMAP_SCALE = 5
