@@ -1,8 +1,8 @@
 import pygame
-
 from numba import int32
 from numba.core import types
 from numba.typed import Dict
+
 from settings import *
 
 world_map = Dict.empty(key_type=types.UniTuple(int32, 2), value_type=int32)

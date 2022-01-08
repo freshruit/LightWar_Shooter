@@ -1,8 +1,12 @@
-from ray_casting import *
-from drawing import *
+import pygame
+from collections import deque
 from numba import int32
 from numba.core import types
 from numba.typed import Dict
+
+from drawing import load_image
+from settings import *
+from ray_casting import mapping
 
 
 class Sprites(pygame.sprite.Sprite):

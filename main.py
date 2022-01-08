@@ -1,8 +1,11 @@
-from sprite_objects import *
-from interaction import *
-from drawing import *
-from player import *
-from player_processing import *
+import pygame
+
+from sprite_objects import Sprites
+from player import Player
+from drawing import Drawing, screen, screen_map
+from player_processing import User
+from interaction import Interaction
+from ray_casting import ray_casting_walls
 
 
 def main():

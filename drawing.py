@@ -1,10 +1,12 @@
+import pygame
 import random
-import player_processing
 import sys
 import os
-
-from map import *
 from collections import *
+
+import player_processing
+from settings import *
+from map import mini_map
 
 pygame.init()
 screen = pygame.display.set_mode(SIZE)

@@ -1,4 +1,5 @@
 import sqlite3
+
 import interaction
 
 highscore = 1
