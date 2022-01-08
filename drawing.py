@@ -261,7 +261,6 @@ class Drawing:
         pygame.quit()
 
     def menu(self):
-        global highscore
         x = 0
         button_font = pygame.font.Font('data/fonts/pixel_font.ttf', 72)
         label_font = pygame.font.Font('data/fonts/cyberpunk_font.ttf', 168)

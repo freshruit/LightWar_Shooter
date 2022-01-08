@@ -8,18 +8,18 @@ from settings import *
 world_map = Dict.empty(key_type=types.UniTuple(int32, 2), value_type=int32)
 mini_map = set()
 collision_walls = []
-map = None
+matrix_map = None
 WORLD_WIDTH = 0
 WORLD_HEIGHT = 0
 
 
 def create_map(score):
-    global WORLD_WIDTH, WORLD_HEIGHT, map
+    global WORLD_WIDTH, WORLD_HEIGHT, matrix_map
     with open(f"data/levels/{score}.txt") as level:
-        map = [[int(i) for i in row if i != '\n'] for row in level]
-        WORLD_WIDTH = len(map[0]) * TILE
-        WORLD_HEIGHT = len(map) * TILE
-        for j, row in enumerate(map):
+        matrix_map = [[int(i) for i in row if i != '\n'] for row in level]
+        WORLD_WIDTH = len(matrix_map[0]) * TILE
+        WORLD_HEIGHT = len(matrix_map) * TILE
+        for j, row in enumerate(matrix_map):
             for i, char in enumerate(row):
                 if char:
                     mini_map.add((i * MAP_TILE, j * MAP_TILE))
