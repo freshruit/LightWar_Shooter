@@ -125,13 +125,13 @@ class Sprites(pygame.sprite.Sprite):
             SpriteObject(self.sprite_parameters['sprite_flame'], (8.6, 5.6)),
             SpriteObject(self.sprite_parameters['sprite_door_v'], (3.5, 3.5)),
             SpriteObject(self.sprite_parameters['sprite_door_h'], (1.5, 4.5)),
-            # SpriteObject(self.sprite_parameters['npc_soldier'], (2.5, 1.5)),
-            # SpriteObject(self.sprite_parameters['npc_soldier'], (5.51, 1.5)),
-            # SpriteObject(self.sprite_parameters['npc_soldier'], (6.61, 2.92)),
-            # SpriteObject(self.sprite_parameters['npc_soldier'], (7.68, 1.47)),
-            # SpriteObject(self.sprite_parameters['npc_soldier'], (8.75, 3.65)),
-            # SpriteObject(self.sprite_parameters['npc_soldier'], (1.27, 11.5)),
-            # SpriteObject(self.sprite_parameters['npc_soldier'], (1.26, 8.29)),
+            SpriteObject(self.sprite_parameters['npc_soldier'], (2.5, 1.5)),
+            SpriteObject(self.sprite_parameters['npc_soldier'], (5.51, 1.5)),
+            SpriteObject(self.sprite_parameters['npc_soldier'], (6.61, 2.92)),
+            SpriteObject(self.sprite_parameters['npc_soldier'], (7.68, 1.47)),
+            SpriteObject(self.sprite_parameters['npc_soldier'], (8.75, 3.65)),
+            SpriteObject(self.sprite_parameters['npc_soldier'], (1.27, 11.5)),
+            SpriteObject(self.sprite_parameters['npc_soldier'], (1.26, 8.29)),
         ]
 
     @property

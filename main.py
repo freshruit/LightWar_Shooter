@@ -6,15 +6,17 @@ from player_processing import *
 
 
 def main():
+    global user
     all_sprites = pygame.sprite.Group()
     sprites = Sprites()
     clock = pygame.time.Clock()
     player = Player(sprites)
     drawing = Drawing(screen, screen_map, player, clock)
-    drawing.menu()
-
-    user = User(drawing.enter_name())
+    if not user:
+        username = drawing.enter_name()
+        user = User(username)
     user.add_player()
+    drawing.menu()
 
     interaction = Interaction(player, sprites, drawing, screen)
     interaction.play_music()
@@ -39,6 +41,7 @@ def main():
             main()
         if interaction.win_flag:
             if drawing.win():
+                user.next_level()
                 main()
         user.update_player()
 
@@ -48,4 +51,5 @@ def main():
 
 
 if __name__ == '__main__':
+    user = None
     main()

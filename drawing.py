@@ -1,4 +1,5 @@
 import random
+import player_processing
 import sys
 import os
 
@@ -258,6 +259,7 @@ class Drawing:
         pygame.quit()
 
     def menu(self):
+        global highscore
         x = 0
         button_font = pygame.font.Font('data/fonts/pixel_font.ttf', 72)
         label_font = pygame.font.Font('data/fonts/cyberpunk_font.ttf', 168)
@@ -280,6 +282,7 @@ class Drawing:
                     pygame.quit()
                     sys.exit()
 
+            color = random.randrange(40)
             self.screen.blit(self.menu_picture, (0, 0), (x % WIDTH, HALF_HEIGHT, WIDTH, HEIGHT))
             x += 1
 
@@ -292,9 +295,11 @@ class Drawing:
             pygame.draw.rect(self.screen, BLACK, button_leaders, border_radius=25, width=10)
             self.screen.blit(leaders, (button_leaders.centerx - 170, button_leaders.centery - 75))
 
-            color = random.randrange(40)
             label = label_font.render('LightWar', True, (color, color, color))
             self.screen.blit(label, (100, 50))
+
+            label = self.fps_font.render(f"Текущий уровень:{player_processing.highscore}", True, (color, color, color))
+            self.screen.blit(label, (120, 20))
 
             mouse_pos = pygame.mouse.get_pos()
             mouse_click = pygame.mouse.get_pressed()
