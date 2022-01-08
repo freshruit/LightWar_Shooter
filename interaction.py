@@ -44,6 +44,7 @@ class Interaction:
         self.sprites = sprites
         self.drawing = drawing
         self.screen = screen
+        self.flag_adversary = True
         self.pain_sound = pygame.mixer.Sound('data/sounds/pain.mp3')
 
     def interaction_objects(self):
@@ -95,8 +96,12 @@ class Interaction:
     def check_win(self):
         count_living_sprites = len([obj for obj in self.sprites.list_of_objects
                                     if obj.flag == 'npc' and not obj.is_dead])
+        if self.flag_adversary:
+            self.n_adversary = count_living_sprites
+            self.flag_adversary = False
 
-        render = self.font.render('Осталось противников: ' + str(count_living_sprites), False, SANDY)
+        render = self.font.render('Осталось противников: ' + str(count_living_sprites) + '/' + str(self.n_adversary),
+                                  False, SANDY)
         self.screen.blit(render, (0, 0))
 
         if not count_living_sprites:
