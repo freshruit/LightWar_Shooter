@@ -1,10 +1,6 @@
 from ray_casting import *
-from settings import *
-from main import *
-from player import *
-from sprite_objects import *
 from drawing import *
-
+from time import time
 
 @njit(fastmath=True, cache=True)
 def ray_casting_npc_player(npc_x, npc_y, blocked_doors, world_map, player_pos):
@@ -49,6 +45,7 @@ class Interaction:
         self.drawing = drawing
         self.screen = screen
         self.flag_adversary = True
+        self.flag_time = True
         self.pain_sound = pygame.mixer.Sound('data/sounds/pain.mp3')
 
     def interaction_objects(self):
@@ -103,21 +100,28 @@ class Interaction:
         if self.flag_adversary:
             self.n_adversary = count_living_sprites
             self.flag_adversary = False
+        render_adversary = self.font.render('Осталось противников: ' + str(count_living_sprites) +
+                                            ' из ' + str(self.n_adversary), False, DARKORANGE)
+        self.screen.blit(render_adversary, (0, 166))
 
-        render = self.font.render('Осталось противников: ' + str(count_living_sprites) + '/' + str(self.n_adversary),
-                                  False, SANDY)
-        self.screen.blit(render, (0, 0))
+        if self.flag_time:
+            self.old_time = round(time())
+            self.flag_time = False
+
+        render_time = self.font.render('Время прохождения: ' + str(round(time()) - self.old_time) + 'c',
+                                       False, DARKORANGE)
+
+        self.screen.blit(render_time, (0, 186))
 
         if not count_living_sprites:
             pygame.mixer.music.stop()
             pygame.mixer.music.load('data/sounds/win.mp3')
             pygame.mixer.music.play()
-            pygame.mouse.set_visible(True)
             while True:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
-                        exit()
+                        pygame.quit()
+                        sys.exit()
                 self.drawing.win()
-                break
-            return True
+                return True
 
