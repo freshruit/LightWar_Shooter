@@ -24,6 +24,8 @@ class User:
             con.close()
         except sqlite3.IntegrityError:
             self.upload_player()
+        finally:
+            return self.highscore
 
     def upload_player(self):
         global highscore

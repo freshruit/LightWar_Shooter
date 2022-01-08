@@ -13,9 +13,9 @@ WORLD_WIDTH = 0
 WORLD_HEIGHT = 0
 
 
-def create_map():
+def create_map(score):
     global WORLD_WIDTH, WORLD_HEIGHT, map
-    with open("data/levels/1.txt") as level:
+    with open(f"data/levels/{score}.txt") as level:
         map = [[int(i) for i in row if i != '\n'] for row in level]
         WORLD_WIDTH = len(map[0]) * TILE
         WORLD_HEIGHT = len(map) * TILE

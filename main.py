@@ -17,10 +17,9 @@ def main():
     player = Player(sprites)
     drawing = Drawing(screen, screen_map, player, clock)
     if not user:
-        create_map()
         username = drawing.enter_name()
         user = User(username)
-    user.add_player()
+        create_map(user.add_player())
     drawing.menu()
 
     interaction = Interaction(player, sprites, drawing, screen)
