@@ -44,6 +44,7 @@ class Interaction:
         self.sprites = sprites
         self.drawing = drawing
         self.screen = screen
+        self.win_flag = False
         self.flag_adversary = True
         self.pain_sound = pygame.mixer.Sound('data/sounds/pain.mp3')
 
@@ -99,10 +100,12 @@ class Interaction:
         if self.flag_adversary:
             self.n_adversary = count_living_sprites
             self.flag_adversary = False
-        render = self.font.render('Осталось противников: ' + str(count_living_sprites), False, DARKORANGE)
+        render = self.font.render(f"Осталось противников:{str(count_living_sprites)}/{str(self.n_adversary)}",
+                                  False, DARKORANGE)
         self.screen.blit(render, (0, 166))
 
         if not count_living_sprites:
+            self.win_flag = True
             pygame.mixer.music.stop()
             pygame.mixer.music.load('data/sounds/win.mp3')
             pygame.mixer.music.play()
@@ -111,6 +114,4 @@ class Interaction:
                     if event.type == pygame.QUIT:
                         pygame.quit()
                         sys.exit()
-                self.drawing.win()
                 return True
-

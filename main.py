@@ -28,8 +28,14 @@ def main():
         interaction.clear_world()
         interaction.check_win()
 
-        if interaction.check_win() or player.keys_control():
+        if interaction.check_win():
+            drawing.win()
+        if player.keys_control():
             main()
+        if interaction.win_flag:
+            if drawing.win():
+                main()
+
         all_sprites.update(screen)
         pygame.display.flip()
         clock.tick()
