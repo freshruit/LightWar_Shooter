@@ -1,4 +1,5 @@
 from ray_casting import *
+from drawing import *
 
 
 @njit(fastmath=True, cache=True)
@@ -37,10 +38,13 @@ def ray_casting_npc_player(npc_x, npc_y, blocked_doors, world_map, player_pos):
 
 
 class Interaction:
-    def __init__(self, player, sprites, drawing):
+    def __init__(self, player, sprites, drawing, screen):
+        self.font = pygame.font.SysFont('Arial', 20, bold=True)
         self.player = player
         self.sprites = sprites
         self.drawing = drawing
+        self.screen = screen
+        self.flag_adversary = True
         self.pain_sound = pygame.mixer.Sound('data/sounds/pain.mp3')
 
     def interaction_objects(self):
@@ -90,12 +94,23 @@ class Interaction:
         pygame.mixer.music.play(10)
 
     def check_win(self):
-        if not len([obj for obj in self.sprites.list_of_objects if obj.flag == 'npc' and not obj.is_dead]):
+        count_living_sprites = len([obj for obj in self.sprites.list_of_objects
+                                    if obj.flag == 'npc' and not obj.is_dead])
+        if self.flag_adversary:
+            self.n_adversary = count_living_sprites
+            self.flag_adversary = False
+        render = self.font.render('Осталось противников: ' + str(count_living_sprites), False, DARKORANGE)
+        self.screen.blit(render, (0, 166))
+
+        if not count_living_sprites:
             pygame.mixer.music.stop()
             pygame.mixer.music.load('data/sounds/win.mp3')
             pygame.mixer.music.play()
             while True:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
-                        exit()
+                        pygame.quit()
+                        sys.exit()
                 self.drawing.win()
+                return True
+

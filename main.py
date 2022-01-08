@@ -1,18 +1,19 @@
-from player import *
 from sprite_objects import *
-from drawing import *
 from interaction import *
+from drawing import *
+from player import *
 
 
 def main():
+    all_sprites = pygame.sprite.Group()
     sprites = Sprites()
     clock = pygame.time.Clock()
     player = Player(sprites)
     drawing = Drawing(screen, screen_map, player, clock)
     drawing.menu()
-    interaction = Interaction(player, sprites, drawing)
+    interaction = Interaction(player, sprites, drawing, screen)
     interaction.play_music()
-    pygame.mouse.set_visible(False)
+    all_sprites.draw(screen)
     while True:
         player.movement()
         drawing.background(player.angle)
@@ -27,6 +28,9 @@ def main():
         interaction.clear_world()
         interaction.check_win()
 
+        if interaction.check_win() or player.keys_control():
+            main()
+        all_sprites.update(screen)
         pygame.display.flip()
         clock.tick()
 
