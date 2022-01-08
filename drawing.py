@@ -33,7 +33,7 @@ class Drawing:
         self.screen_map = screen_map
         self.player = player
         self.clock = clock
-        self.font = pygame.font.SysFont('Arial', 36, bold=True)
+        self.fps_font = pygame.font.SysFont('Arial', 36, bold=True)
         self.font_win = pygame.font.Font('data/fonts/pixel_font.ttf', 144)
         self.textures = {1: load_image('textures/wall1.jpg'),
                          2: load_image('textures/wall2.jpg'),
@@ -57,6 +57,7 @@ class Drawing:
         self.sfx = deque([load_image(f'sprites/weapons/sfx/{i}.png') for i in range(9)])
         self.sfx_length_count = 0
         self.sfx_length = len(self.sfx)
+        self.font = pygame.font.SysFont('Arial', 20, bold=True)
 
     def background(self, angle):
         sky_offset = -10 * math.degrees(angle) % WIDTH
@@ -73,7 +74,7 @@ class Drawing:
 
     def fps(self, clock):
         display_fps = str(int(clock.get_fps()))
-        render = self.font.render(f"FPS:{display_fps}", False, DARKORANGE)
+        render = self.fps_font.render(f"FPS:{display_fps}", False, DARKORANGE)
         self.screen.blit(render, FPS_POS)
 
     def mini_map(self, player):
@@ -118,13 +119,143 @@ class Drawing:
             self.sfx.rotate(-1)
 
     def win(self):
+        button_font = pygame.font.Font('data/fonts/pixel_font.ttf', 72)
+
         render = self.font_win.render('Победа!', True, (random.randrange(40, 120), 0, 0))
         rect = pygame.Rect(0, 0, 1000, 300)
         rect.center = HALF_WIDTH, HALF_HEIGHT
         pygame.draw.rect(self.screen, BLACK, rect, border_radius=50)
         self.screen.blit(render, (rect.centerx - 330, rect.centery - 140))
-        pygame.display.flip()
-        self.clock.tick(15)
+
+        menu = button_font.render('Меню', True, pygame.Color('lightgray'))
+        button_menu = pygame.Rect(0, 0, 370, 111)
+        button_menu.center = HALF_WIDTH - 250, HALF_HEIGHT + 250
+
+        exit = button_font.render('Выйти', True, pygame.Color('lightgray'))
+        button_exit = pygame.Rect(0, 0, 370, 111)
+        button_exit.center = HALF_WIDTH + 250, HALF_HEIGHT + 250
+
+        self.menu_trigger = True
+        while self.menu_trigger:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+            pygame.draw.rect(self.screen, BLACK, button_menu, border_radius=25, width=10)
+            self.screen.blit(menu, (button_menu.centerx - 120, button_menu.centery - 75))
+
+            pygame.draw.rect(self.screen, BLACK, button_exit, border_radius=25, width=10)
+            self.screen.blit(exit, (button_exit.centerx - 130, button_exit.centery - 75))
+
+            mouse_pos = pygame.mouse.get_pos()
+            mouse_click = pygame.mouse.get_pressed()
+            pygame.mouse.set_visible(True)
+            if button_menu.collidepoint(mouse_pos):
+                pygame.draw.rect(self.screen, BLACK, button_menu, border_radius=25)
+                self.screen.blit(menu, (button_menu.centerx - 120, button_menu.centery - 75))
+                if mouse_click[0]:
+                    return True
+            elif button_exit.collidepoint(mouse_pos):
+                pygame.draw.rect(self.screen, BLACK, button_exit, border_radius=25)
+                self.screen.blit(exit, (button_exit.centerx - 130, button_exit.centery - 75))
+                if mouse_click[0]:
+                    pygame.quit()
+                    sys.exit()
+            pygame.display.flip()
+            self.clock.tick(15)
+
+    def enter_name(self):
+        image = load_image('textures/background.jpg')
+        name = ""
+        running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                    exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_a:
+                        name += "a"
+                    elif event.key == pygame.K_BACKSPACE:
+                        name = name[:-1]
+                    elif event.key == pygame.K_b:
+                        name += "b"
+                    elif event.key == pygame.K_c:
+                        name += "c"
+                    elif event.key == pygame.K_d:
+                        name += "d"
+                    elif event.key == pygame.K_e:
+                        name += "e"
+                    elif event.key == pygame.K_f:
+                        name += "f"
+                    elif event.key == pygame.K_j:
+                        name += "j"
+                    elif event.key == pygame.K_k:
+                        name += "k"
+                    elif event.key == pygame.K_l:
+                        name += "l"
+                    elif event.key == pygame.K_g:
+                        name += "g"
+                    elif event.key == pygame.K_m:
+                        name += "m"
+                    elif event.key == pygame.K_n:
+                        name += "n"
+                    elif event.key == pygame.K_o:
+                        name += "o"
+                    elif event.key == pygame.K_p:
+                        name += "p"
+                    elif event.key == pygame.K_q:
+                        name += "q"
+                    elif event.key == pygame.K_r:
+                        name += "r"
+                    elif event.key == pygame.K_s:
+                        name += "s"
+                    elif event.key == pygame.K_t:
+                        name += "t"
+                    elif event.key == pygame.K_u:
+                        name += "u"
+                    elif event.key == pygame.K_w:
+                        name += "w"
+                    elif event.key == pygame.K_h:
+                        name += "h"
+                    elif event.key == pygame.K_x:
+                        name += "x"
+                    elif event.key == pygame.K_y:
+                        name += "y"
+                    elif event.key == pygame.K_z:
+                        name += "z"
+                    elif event.key == pygame.K_SPACE:
+                        name += " "
+                    elif event.key == pygame.K_v:
+                        name += "v"
+                    elif event.key == pygame.K_i:
+                        name += "i"
+                    elif event.key == pygame.K_RETURN:
+                        screen.fill((0, 0, 0))
+                        return name
+
+            text = self.font.render(name, True, (0, 0, 0))
+            description = self.font.render("Введите никнейм", True, (0, 0, 0))
+            x = 400
+            y = 350
+            text_x = 400
+            text_y = 400
+            text_w = text.get_width()
+            text_h = text.get_height()
+            screen.fill((0, 0, 0))
+            image1 = pygame.transform.scale(image, (1200, 800))
+            screen.blit(image1, (0, 0))
+            screen.blit(text, (text_x, text_y))
+            screen.blit(description, (x, y))
+            if text_w <= 300:
+                pygame.draw.rect(screen, (0, 0, 0), (350, text_y - 10,
+                                                     300, text_h + 20), 3)
+            else:
+                pygame.draw.rect(screen, (0, 0, 0), (text_x - 10, text_y - 10,
+                                                     text_w + 20, text_h + 20), 3)
+            pygame.display.update()
+        pygame.quit()
 
     def menu(self):
         x = 0

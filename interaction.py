@@ -1,6 +1,10 @@
+import time
+
 from ray_casting import *
 from drawing import *
-from time import time
+
+total_time = 0
+
 
 @njit(fastmath=True, cache=True)
 def ray_casting_npc_player(npc_x, npc_y, blocked_doors, world_map, player_pos):
@@ -39,13 +43,14 @@ def ray_casting_npc_player(npc_x, npc_y, blocked_doors, world_map, player_pos):
 
 class Interaction:
     def __init__(self, player, sprites, drawing, screen):
+        self.flag_time = True
         self.font = pygame.font.SysFont('Arial', 20, bold=True)
         self.player = player
         self.sprites = sprites
         self.drawing = drawing
         self.screen = screen
+        self.win_flag = False
         self.flag_adversary = True
-        self.flag_time = True
         self.pain_sound = pygame.mixer.Sound('data/sounds/pain.mp3')
 
     def interaction_objects(self):
@@ -95,25 +100,27 @@ class Interaction:
         pygame.mixer.music.play(10)
 
     def check_win(self):
+        global total_time
         count_living_sprites = len([obj for obj in self.sprites.list_of_objects
                                     if obj.flag == 'npc' and not obj.is_dead])
         if self.flag_adversary:
             self.n_adversary = count_living_sprites
             self.flag_adversary = False
-        render_adversary = self.font.render('Осталось противников: ' + str(count_living_sprites) +
-                                            ' из ' + str(self.n_adversary), False, DARKORANGE)
+        render_adversary = self.font.render(f"Осталось противников:{str(count_living_sprites)}/{str(self.n_adversary)}",
+                                            False, DARKORANGE)
         self.screen.blit(render_adversary, (0, 166))
 
         if self.flag_time:
-            self.old_time = round(time())
+            self.old_time = round(time.time())
             self.flag_time = False
 
-        render_time = self.font.render('Время прохождения: ' + str(round(time()) - self.old_time) + 'c',
+        total_time = round(time.time()) - self.old_time
+        render_time = self.font.render(f"Время прохождения:{total_time} сек.",
                                        False, DARKORANGE)
-
         self.screen.blit(render_time, (0, 186))
 
         if not count_living_sprites:
+            self.win_flag = True
             pygame.mixer.music.stop()
             pygame.mixer.music.load('data/sounds/win.mp3')
             pygame.mixer.music.play()
@@ -122,6 +129,4 @@ class Interaction:
                     if event.type == pygame.QUIT:
                         pygame.quit()
                         sys.exit()
-                self.drawing.win()
                 return True
-

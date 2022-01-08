@@ -2,6 +2,7 @@ from sprite_objects import *
 from interaction import *
 from drawing import *
 from player import *
+from player_processing import *
 
 
 def main():
@@ -11,6 +12,10 @@ def main():
     player = Player(sprites)
     drawing = Drawing(screen, screen_map, player, clock)
     drawing.menu()
+
+    user = User(drawing.enter_name())
+    user.add_player()
+
     interaction = Interaction(player, sprites, drawing, screen)
     interaction.play_music()
     all_sprites.draw(screen)
@@ -26,11 +31,17 @@ def main():
         interaction.interaction_objects()
         interaction.npc_action()
         interaction.clear_world()
-        if interaction.check_win():
-            main()
+        interaction.check_win()
 
-        if interaction.check_win() or player.keys_control():
+        if interaction.check_win():
+            drawing.win()
+        if player.keys_control():
             main()
+        if interaction.win_flag:
+            if drawing.win():
+                main()
+        user.update_player()
+
         all_sprites.update(screen)
         pygame.display.flip()
         clock.tick()

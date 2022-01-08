@@ -3,7 +3,6 @@ from drawing import *
 from numba import int32
 from numba.core import types
 from numba.typed import Dict
-from main import main
 
 
 class Sprites(pygame.sprite.Sprite):
