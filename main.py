@@ -25,7 +25,8 @@ def main():
         interaction.interaction_objects()
         interaction.npc_action()
         interaction.clear_world()
-        interaction.check_win()
+        if interaction.check_win():
+            main()
 
         pygame.display.flip()
         clock.tick()

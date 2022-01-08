@@ -1,5 +1,9 @@
 from ray_casting import *
 from settings import *
+from main import *
+from player import *
+from sprite_objects import *
+from drawing import *
 
 
 @njit(fastmath=True, cache=True)
@@ -114,3 +118,6 @@ class Interaction:
                     if event.type == pygame.QUIT:
                         exit()
                 self.drawing.win()
+                break
+            return True
+
