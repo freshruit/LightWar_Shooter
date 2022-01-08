@@ -3,10 +3,12 @@ from drawing import *
 from numba import int32
 from numba.core import types
 from numba.typed import Dict
+from main import main
 
 
-class Sprites:
-    def __init__(self):
+class Sprites(pygame.sprite.Sprite):
+    def __init__(self, *groups):
+        super().__init__(*groups)
         self.sprite_parameters = {
             'sprite_barrel': {
                 'sprite': load_image('sprites/barrel/base/0.png'),
@@ -96,7 +98,7 @@ class Sprites:
                 'flag': 'door_v',
                 'obj_action': []
             },
-            'npc_soldier0': {
+            'npc_soldier': {
                 'sprite': [load_image(f'sprites/soldier/base/{i}.png')
                            for i in range(8)],
                 'viewing_angles': True,
@@ -124,13 +126,13 @@ class Sprites:
             SpriteObject(self.sprite_parameters['sprite_flame'], (8.6, 5.6)),
             SpriteObject(self.sprite_parameters['sprite_door_v'], (3.5, 3.5)),
             SpriteObject(self.sprite_parameters['sprite_door_h'], (1.5, 4.5)),
-            SpriteObject(self.sprite_parameters['npc_soldier0'], (2.5, 1.5)),
-            SpriteObject(self.sprite_parameters['npc_soldier0'], (5.51, 1.5)),
-            SpriteObject(self.sprite_parameters['npc_soldier0'], (6.61, 2.92)),
-            SpriteObject(self.sprite_parameters['npc_soldier0'], (7.68, 1.47)),
-            SpriteObject(self.sprite_parameters['npc_soldier0'], (8.75, 3.65)),
-            SpriteObject(self.sprite_parameters['npc_soldier0'], (1.27, 11.5)),
-            SpriteObject(self.sprite_parameters['npc_soldier0'], (1.26, 8.29)),
+            # SpriteObject(self.sprite_parameters['npc_soldier'], (2.5, 1.5)),
+            # SpriteObject(self.sprite_parameters['npc_soldier'], (5.51, 1.5)),
+            # SpriteObject(self.sprite_parameters['npc_soldier'], (6.61, 2.92)),
+            # SpriteObject(self.sprite_parameters['npc_soldier'], (7.68, 1.47)),
+            # SpriteObject(self.sprite_parameters['npc_soldier'], (8.75, 3.65)),
+            # SpriteObject(self.sprite_parameters['npc_soldier'], (1.27, 11.5)),
+            # SpriteObject(self.sprite_parameters['npc_soldier'], (1.26, 8.29)),
         ]
 
     @property
@@ -147,8 +149,9 @@ class Sprites:
         return blocked_doors
 
 
-class SpriteObject:
-    def __init__(self, parameters, pos):
+class SpriteObject(pygame.sprite.Sprite):
+    def __init__(self, parameters, pos, *groups):
+        super().__init__(*groups)
         self.object = parameters['sprite'].copy()
         self.viewing_angles = parameters['viewing_angles']
         self.shift = parameters['shift']
