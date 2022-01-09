@@ -20,7 +20,7 @@ def main():
         username = drawing.enter_name()
         user = player_processing.User(username)
     create_map(user.add_player())
-    sprites.complication(player_processing.highscore)
+    sprites.complication(player_processing.total_highscore)
     drawing.menu()
 
     interaction = Interaction(player, sprites, drawing, screen)

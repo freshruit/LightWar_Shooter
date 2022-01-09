@@ -14,6 +14,8 @@ WORLD_HEIGHT = 0
 
 
 def create_map(score):
+    if score == 6:
+        score = 5
     global WORLD_WIDTH, WORLD_HEIGHT, matrix_map
     with open(f"data/levels/{score}.txt") as level:
         matrix_map = [[int(i) for i in row if i != '\n'] for row in level]

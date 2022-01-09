@@ -129,6 +129,8 @@ class Sprites(pygame.sprite.Sprite):
         ]
 
     def complication(self, score):
+        if score == 6:
+            score = 5
         for i in range(score * 4):
             self.list_of_objects.append(SpriteObject(self.sprite_parameters['npc_soldier'],
                                                      (random.uniform(2, 6), random.uniform(2, 6))))

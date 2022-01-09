@@ -299,7 +299,13 @@ class Drawing:
             label = label_font.render('LightWar', True, (color, color, color))
             self.screen.blit(label, (100, 50))
 
-            label = self.fps_font.render(f"Текущий уровень:{player_processing.highscore}", True, (color, color, color))
+            if player_processing.total_highscore == 6:
+                highscore = "Игра завершена!"
+            else:
+                highscore = player_processing.total_highscore
+
+            label = self.fps_font.render(f"Текущий уровень: {highscore}", True,
+                                         (color, color, color))
             self.screen.blit(label, (120, 20))
 
             mouse_pos = pygame.mouse.get_pos()
