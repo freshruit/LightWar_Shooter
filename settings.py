@@ -1,4 +1,3 @@
-print(0)
 import math
 
 # Настройки игры

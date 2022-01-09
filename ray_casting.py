@@ -1,4 +1,3 @@
-print(0)
 import pygame
 from numba import njit
 
