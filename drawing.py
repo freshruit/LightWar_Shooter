@@ -240,9 +240,10 @@ class Drawing:
 
             text = self.font.render(name, True, (0, 0, 0))
             description = self.font.render("Введите никнейм", True, (0, 0, 0))
-            x = 400
+            developers = self.font.render("Ganzha & Medvedev company", True, (0, 0, 0))
+            x = 500
             y = 350
-            text_x = 400
+            text_x = 525
             text_y = 400
             text_w = text.get_width()
             text_h = text.get_height()
@@ -250,9 +251,10 @@ class Drawing:
             image1 = pygame.transform.scale(image, (1200, 800))
             screen.blit(image1, (0, 0))
             screen.blit(text, (text_x, text_y))
+            screen.blit(developers, (900, 750))
             screen.blit(description, (x, y))
             if text_w <= 300:
-                pygame.draw.rect(screen, (0, 0, 0), (350, text_y - 10,
+                pygame.draw.rect(screen, (0, 0, 0), (430, text_y - 10,
                                                      300, text_h + 20), 3)
             else:
                 pygame.draw.rect(screen, (0, 0, 0), (text_x - 10, text_y - 10,
