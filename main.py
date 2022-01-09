@@ -1,8 +1,11 @@
-from sprite_objects import *
-from interaction import *
-from drawing import *
-from player import *
-from player_processing import *
+import pygame
+
+import player_processing
+from sprite_objects import Sprites
+from player import Player
+from drawing import Drawing, screen, screen_map
+from interaction import Interaction
+from ray_casting import ray_casting_walls
 
 
 def main():
@@ -14,8 +17,9 @@ def main():
     drawing = Drawing(screen, screen_map, player, clock)
     if not user:
         username = drawing.enter_name()
-        user = User(username)
-    user.add_player()
+        user = player_processing.User(username)
+        user.add_player()
+    sprites.complication(player_processing.total_highscore)
     drawing.menu()
 
     interaction = Interaction(player, sprites, drawing, screen)

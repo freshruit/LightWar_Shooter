@@ -1,8 +1,13 @@
-from ray_casting import *
-from drawing import *
+import pygame
+import random
+from collections import deque
 from numba import int32
 from numba.core import types
 from numba.typed import Dict
+
+from drawing import load_image
+from settings import *
+from ray_casting import mapping
 
 
 class Sprites(pygame.sprite.Sprite):
@@ -119,20 +124,25 @@ class Sprites(pygame.sprite.Sprite):
         }
 
         self.list_of_objects = [
-            SpriteObject(self.sprite_parameters['sprite_barrel'], (7.1, 2.1)),
-            SpriteObject(self.sprite_parameters['sprite_barrel'], (5.9, 2.1)),
-            SpriteObject(self.sprite_parameters['npc_devil'], (7, 4)),
-            SpriteObject(self.sprite_parameters['sprite_flame'], (8.6, 5.6)),
             SpriteObject(self.sprite_parameters['sprite_door_v'], (3.5, 3.5)),
             SpriteObject(self.sprite_parameters['sprite_door_h'], (1.5, 4.5)),
-            SpriteObject(self.sprite_parameters['npc_soldier'], (2.5, 1.5)),
-            SpriteObject(self.sprite_parameters['npc_soldier'], (5.51, 1.5)),
-            SpriteObject(self.sprite_parameters['npc_soldier'], (6.61, 2.92)),
-            SpriteObject(self.sprite_parameters['npc_soldier'], (7.68, 1.47)),
-            SpriteObject(self.sprite_parameters['npc_soldier'], (8.75, 3.65)),
-            SpriteObject(self.sprite_parameters['npc_soldier'], (1.27, 11.5)),
-            SpriteObject(self.sprite_parameters['npc_soldier'], (1.26, 8.29)),
         ]
+
+    def complication(self, score):
+        if score == 6:
+            score = 5
+        for i in range(score * 4):
+            self.list_of_objects.append(SpriteObject(self.sprite_parameters['npc_soldier'],
+                                                     (random.uniform(2, 6), random.uniform(2, 6))))
+            if i % 2:
+                self.list_of_objects.append(SpriteObject(self.sprite_parameters['sprite_flame'],
+                                                         (random.uniform(2, 10), random.uniform(2, 10))))
+            elif i % 3:
+                self.list_of_objects.append(SpriteObject(self.sprite_parameters['npc_devil'],
+                                                         (random.uniform(2, 6), random.uniform(2, 6))))
+            elif i % 4:
+                self.list_of_objects.append(SpriteObject(self.sprite_parameters['sprite_barrel'],
+                                                         (random.uniform(2, 10), random.uniform(2, 10))))
 
     @property
     def sprite_shot(self):

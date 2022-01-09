@@ -1,11 +1,13 @@
+import pygame
 import random
-import sqlite3
-import player_processing
 import sys
 import os
-
-from map import *
+import sqlite3
 from collections import *
+
+import player_processing
+from settings import *
+from map import mini_map
 
 pygame.init()
 screen = pygame.display.set_mode(SIZE)
@@ -239,9 +241,10 @@ class Drawing:
 
             text = self.font.render(name, True, (0, 0, 0))
             description = self.font.render("Введите никнейм", True, (0, 0, 0))
-            x = 400
+            developers = self.font.render("Ganzha & Medvedev company", True, (0, 0, 0))
+            x = 500
             y = 350
-            text_x = 400
+            text_x = 525
             text_y = 400
             text_w = text.get_width()
             text_h = text.get_height()
@@ -249,9 +252,10 @@ class Drawing:
             image1 = pygame.transform.scale(image, (1200, 800))
             screen.blit(image1, (0, 0))
             screen.blit(text, (text_x, text_y))
+            screen.blit(developers, (900, 750))
             screen.blit(description, (x, y))
             if text_w <= 300:
-                pygame.draw.rect(screen, (0, 0, 0), (350, text_y - 10,
+                pygame.draw.rect(screen, (0, 0, 0), (430, text_y - 10,
                                                      300, text_h + 20), 3)
             else:
                 pygame.draw.rect(screen, (0, 0, 0), (text_x - 10, text_y - 10,
@@ -260,7 +264,6 @@ class Drawing:
         pygame.quit()
 
     def menu(self):
-        global highscore
         self.x = 0
         button_font = pygame.font.Font('data/fonts/pixel_font.ttf', 72)
         label_font = pygame.font.Font('data/fonts/cyberpunk_font.ttf', 168)
@@ -299,7 +302,13 @@ class Drawing:
             label = label_font.render('LightWar', True, (color, color, color))
             self.screen.blit(label, (100, 50))
 
-            label = self.fps_font.render(f"Текущий уровень:{player_processing.highscore}", True, (color, color, color))
+            if player_processing.total_highscore == 6:
+                highscore = "Игра завершена!"
+            else:
+                highscore = player_processing.total_highscore
+
+            label = self.fps_font.render(f"Текущий уровень: {highscore}", True,
+                                         (color, color, color))
             self.screen.blit(label, (120, 20))
 
             mouse_pos = pygame.mouse.get_pos()
