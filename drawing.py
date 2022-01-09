@@ -2,6 +2,7 @@ import pygame
 import random
 import sys
 import os
+import sqlite3
 from collections import *
 
 import player_processing
@@ -263,7 +264,7 @@ class Drawing:
         pygame.quit()
 
     def menu(self):
-        x = 0
+        self.x = 0
         button_font = pygame.font.Font('data/fonts/pixel_font.ttf', 72)
         label_font = pygame.font.Font('data/fonts/cyberpunk_font.ttf', 168)
 
@@ -286,8 +287,8 @@ class Drawing:
                     sys.exit()
 
             color = random.randrange(40)
-            self.screen.blit(self.menu_picture, (0, 0), (x % WIDTH, HALF_HEIGHT, WIDTH, HEIGHT))
-            x += 1
+            self.screen.blit(self.menu_picture, (0, 0), (self.x % WIDTH, HALF_HEIGHT, WIDTH, HEIGHT))
+            self.x += 1
 
             pygame.draw.rect(self.screen, BLACK, button_start, border_radius=25, width=10)
             self.screen.blit(start, (button_start.centerx - 140, button_start.centery - 75))
@@ -329,6 +330,83 @@ class Drawing:
                 pygame.draw.rect(self.screen, BLACK, button_leaders, border_radius=25)
                 self.screen.blit(leaders, (button_leaders.centerx - 170, button_leaders.centery - 75))
                 if mouse_click[0]:
-                    pass
+                    self.make_leaderboard()
             pygame.display.flip()
             self.clock.tick(20)
+
+    def make_leaderboard(self):
+        button_font = pygame.font.Font('data/fonts/pixel_font.ttf', 72)
+        label_font = pygame.font.Font('data/fonts/cyberpunk_font.ttf', 168)
+
+        menu = button_font.render('Меню', True, pygame.Color('lightgray'))
+        button_menu = pygame.Rect(0, 0, 370, 111)
+        button_menu.center = HALF_WIDTH - 270, HALF_HEIGHT + 250
+
+        exit = button_font.render('Выйти', True, pygame.Color('lightgray'))
+        button_exit = pygame.Rect(0, 0, 370, 111)
+        button_exit.center = HALF_WIDTH + 270, HALF_HEIGHT + 250
+
+        self.menu_trigger = True
+        while self.menu_trigger:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+            color = random.randrange(40)
+            self.screen.blit(self.menu_picture, (0, 0), (self.x % WIDTH, HALF_HEIGHT, WIDTH, HEIGHT))
+            self.x += 1
+
+            pygame.draw.rect(self.screen, BLACK, button_menu, border_radius=25, width=10)
+            self.screen.blit(menu, (button_menu.centerx - 120, button_menu.centery - 75))
+
+            pygame.draw.rect(self.screen, BLACK, button_exit, border_radius=25, width=10)
+            self.screen.blit(exit, (button_exit.centerx - 130, button_exit.centery - 75))
+
+            label = label_font.render('LightWar', True, (color, color, color))
+            self.screen.blit(label, (100, 50))
+
+            warning = self.font.render("В таблицу лидеров попадют игроки, прошедшие игру!", True, (0, 0, 0))
+            self.screen.blit(warning, (350, 270))
+
+            leaders = self.font.render("ID Никнейм Затраченное время", True, (0, 0, 0))
+            self.screen.blit(leaders, (350, 300))
+
+            for j, row in enumerate(self.data_leaderboard()):
+                id, name, level, time = row
+
+                label_id = self.font.render(str(id), True, (0, 0, 0))
+                screen.blit(label_id, (345, 350 + j * 50))
+
+                label_name = self.font.render(name, True, (0, 0, 0))
+                screen.blit(label_name, (375, 350 + j * 50))
+
+                label_time = self.font.render(str(time), True, (0, 0, 0))
+                screen.blit(label_time, (525, 350 + j * 50))
+
+            mouse_pos = pygame.mouse.get_pos()
+            mouse_click = pygame.mouse.get_pressed()
+            pygame.mouse.set_visible(True)
+            if button_menu.collidepoint(mouse_pos):
+                pygame.draw.rect(self.screen, BLACK, button_menu, border_radius=25)
+                self.screen.blit(menu, (button_menu.centerx - 120, button_menu.centery - 75))
+                if mouse_click[0]:
+                    return True
+            elif button_exit.collidepoint(mouse_pos):
+                pygame.draw.rect(self.screen, BLACK, button_exit, border_radius=25)
+                self.screen.blit(exit, (button_exit.centerx - 130, button_exit.centery - 75))
+                if mouse_click[0]:
+                    pygame.quit()
+                    sys.exit()
+            pygame.display.flip()
+            self.clock.tick(15)
+
+    def data_leaderboard(self):
+        con = sqlite3.connect('data/LightWar.db')
+        cur = con.cursor()
+        data = cur.execute("""
+                               SELECT * FROM users WHERE highscore = ? ORDER BY time DESC
+                           """, (6,)).fetchall()[:3]
+        con.commit()
+        con.close()
+        return data
