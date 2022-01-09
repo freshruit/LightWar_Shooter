@@ -1,7 +1,4 @@
-import pygame
-
-from settings import *
-from map import collision_walls
+from map import *
 
 
 class Player:

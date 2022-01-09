@@ -1,11 +1,7 @@
-import pygame
 import time
-import sys
-from numba import njit
 
-from ray_casting import mapping
-from settings import *
-from map import world_map
+from ray_casting import *
+from drawing import *
 
 total_time = 0
 

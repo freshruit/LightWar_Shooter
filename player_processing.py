@@ -1,8 +1,7 @@
 import sqlite3
-
 import interaction
 
-total_highscore = 1
+highscore = 1
 
 
 class User:
@@ -24,39 +23,36 @@ class User:
             con.close()
         except sqlite3.IntegrityError:
             self.upload_player()
-        finally:
-            return self.highscore
 
     def upload_player(self):
-        global total_highscore
+        global highscore
         con = sqlite3.connect('data/LightWar.db')
         cur = con.cursor()
         self.id, self.name, self.highscore, self.time = cur.execute("""
                                                     SELECT * FROM users WHERE username = ?
                                                 """, (self.name,)).fetchall()[0]
-        total_highscore = self.highscore
+        highscore = self.highscore
         con.commit()
         con.close()
 
     def update_player(self):
-        if self.highscore < 6:
-            con = sqlite3.connect('data/LightWar.db')
-            cur = con.cursor()
-            cur.execute(f"""
-                            UPDATE users SET time = ? WHERE username = ?
-                        """, (int(self.time + interaction.total_time), self.name)).fetchall()
-            con.commit()
-            con.close()
+        con = sqlite3.connect('data/LightWar.db')
+        cur = con.cursor()
+        cur.execute(f"""
+                        UPDATE users SET time = ? WHERE username = ?
+                    """, (int(self.time + interaction.total_time), self.name)).fetchall()
+        con.commit()
+        con.close()
 
     def next_level(self):
-        global total_highscore
-        if self.highscore < 6:
+        global highscore
+        if self.highscore < 5:
             self.highscore += 1
-            total_highscore = self.highscore
-            con = sqlite3.connect('data/LightWar.db')
-            cur = con.cursor()
-            cur.execute(f"""
-                            UPDATE users SET highscore = ? WHERE username = ?
-                         """, (self.highscore, self.name)).fetchall()
-            con.commit()
-            con.close()
+            highscore = self.highscore
+        con = sqlite3.connect('data/LightWar.db')
+        cur = con.cursor()
+        cur.execute(f"""
+                                UPDATE users SET highscore = ? WHERE username = ?
+                            """, (self.highscore, self.name)).fetchall()
+        con.commit()
+        con.close()
