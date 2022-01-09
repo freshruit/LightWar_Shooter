@@ -1,3 +1,4 @@
+print(0)
 import sqlite3
 
 import interaction

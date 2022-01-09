@@ -1,3 +1,4 @@
+print(0)
 import pygame
 import random
 from collections import deque

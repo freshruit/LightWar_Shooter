@@ -1,3 +1,4 @@
+print(0)
 import pygame
 from numba import int32
 from numba.core import types
