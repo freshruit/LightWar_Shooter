@@ -6,8 +6,8 @@ from numba.core import types
 from numba.typed import Dict
 
 from drawing import load_image
-from settings import *
 from ray_casting import mapping
+from settings import *
 
 
 class Sprites(pygame.sprite.Sprite):

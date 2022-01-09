@@ -1,8 +1,8 @@
 import pygame
 import random
+import sqlite3
 import sys
 import os
-import sqlite3
 from collections import *
 
 import player_processing
