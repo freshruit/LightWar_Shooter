@@ -241,7 +241,7 @@ class Drawing:
 
             text = self.font.render(name, True, (0, 0, 0))
             description = self.font.render("Введите никнейм", True, (0, 0, 0))
-            developers = self.font.render("Ganzha & Medvedev company", True, (0, 0, 0))
+            developers = self.font.render("Ganzha & Medvedev production", True, (0, 0, 0))
             x = 500
             y = 350
             text_x = 525
@@ -252,7 +252,7 @@ class Drawing:
             image1 = pygame.transform.scale(image, (1200, 800))
             screen.blit(image1, (0, 0))
             screen.blit(text, (text_x, text_y))
-            screen.blit(developers, (900, 750))
+            screen.blit(developers, (850, 750))
             screen.blit(description, (x, y))
             if text_w <= 300:
                 pygame.draw.rect(screen, (0, 0, 0), (430, text_y - 10,
@@ -369,7 +369,7 @@ class Drawing:
             warning = self.font.render("В таблицу лидеров попадют игроки, прошедшие игру!", True, (0, 0, 0))
             self.screen.blit(warning, (350, 270))
 
-            leaders = self.font.render("ID Никнейм Затраченное время", True, (0, 0, 0))
+            leaders = self.font.render("ID Никнейм Затраченное время(сек)", True, (0, 0, 0))
             self.screen.blit(leaders, (350, 300))
 
             for j, row in enumerate(self.data_leaderboard()):
