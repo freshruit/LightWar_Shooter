@@ -4,7 +4,7 @@ import player_processing
 from sprite_objects import Sprites
 from player import Player
 from drawing import Drawing, screen, screen_map
-from interaction import Interaction
+from interaction import Interaction, play_music
 from ray_casting import ray_casting_walls
 
 
@@ -23,7 +23,7 @@ def main():
     drawing.menu()
 
     interaction = Interaction(player, sprites, drawing, screen)
-    interaction.play_music()
+    play_music()
     all_sprites.draw(screen)
     while True:
         player.movement()

@@ -31,8 +31,21 @@ def load_image(name, colorkey=None):
     return image
 
 
+def data_leaderboard():
+    con = sqlite3.connect('data/LightWar.db')
+    cur = con.cursor()
+    data = cur.execute("""
+                           SELECT * FROM users WHERE highscore = ? ORDER BY time DESC
+                       """, (6,)).fetchall()[:3]
+    con.commit()
+    con.close()
+    return data
+
+
 class Drawing:
     def __init__(self, screen, screen_map, player, clock):
+        self.x = 0
+        self.shot_projection = 0
         self.screen = screen
         self.screen_map = screen_map
         self.player = player
@@ -135,9 +148,9 @@ class Drawing:
         button_menu = pygame.Rect(0, 0, 370, 111)
         button_menu.center = HALF_WIDTH - 250, HALF_HEIGHT + 250
 
-        exit = button_font.render('Выйти', True, pygame.Color('lightgray'))
-        button_exit = pygame.Rect(0, 0, 370, 111)
-        button_exit.center = HALF_WIDTH + 250, HALF_HEIGHT + 250
+        leave = button_font.render('Выйти', True, pygame.Color('lightgray'))
+        button_leave = pygame.Rect(0, 0, 370, 111)
+        button_leave.center = HALF_WIDTH + 250, HALF_HEIGHT + 250
 
         self.menu_trigger = True
         while self.menu_trigger:
@@ -149,8 +162,8 @@ class Drawing:
             pygame.draw.rect(self.screen, BLACK, button_menu, border_radius=25, width=10)
             self.screen.blit(menu, (button_menu.centerx - 120, button_menu.centery - 75))
 
-            pygame.draw.rect(self.screen, BLACK, button_exit, border_radius=25, width=10)
-            self.screen.blit(exit, (button_exit.centerx - 130, button_exit.centery - 75))
+            pygame.draw.rect(self.screen, BLACK, button_leave, border_radius=25, width=10)
+            self.screen.blit(leave, (button_leave.centerx - 130, button_leave.centery - 75))
 
             mouse_pos = pygame.mouse.get_pos()
             mouse_click = pygame.mouse.get_pressed()
@@ -160,9 +173,9 @@ class Drawing:
                 self.screen.blit(menu, (button_menu.centerx - 120, button_menu.centery - 75))
                 if mouse_click[0]:
                     return True
-            elif button_exit.collidepoint(mouse_pos):
-                pygame.draw.rect(self.screen, BLACK, button_exit, border_radius=25)
-                self.screen.blit(exit, (button_exit.centerx - 130, button_exit.centery - 75))
+            elif button_leave.collidepoint(mouse_pos):
+                pygame.draw.rect(self.screen, BLACK, button_leave, border_radius=25)
+                self.screen.blit(leave, (button_leave.centerx - 130, button_leave.centery - 75))
                 if mouse_click[0]:
                     pygame.quit()
                     sys.exit()
@@ -272,9 +285,9 @@ class Drawing:
         button_start = pygame.Rect(0, 0, 370, 111)
         button_start.center = HALF_WIDTH, HALF_HEIGHT - 50
 
-        exit = button_font.render('Выйти', True, pygame.Color('lightgray'))
-        button_exit = pygame.Rect(0, 0, 370, 111)
-        button_exit.center = HALF_WIDTH, HALF_HEIGHT + 250
+        leave = button_font.render('Выйти', True, pygame.Color('lightgray'))
+        button_leave = pygame.Rect(0, 0, 370, 111)
+        button_leave.center = HALF_WIDTH, HALF_HEIGHT + 250
 
         leaders = button_font.render('Лидеры', True, pygame.Color('lightgray'))
         button_leaders = pygame.Rect(0, 0, 370, 111)
@@ -293,8 +306,8 @@ class Drawing:
             pygame.draw.rect(self.screen, BLACK, button_start, border_radius=25, width=10)
             self.screen.blit(start, (button_start.centerx - 140, button_start.centery - 75))
 
-            pygame.draw.rect(self.screen, BLACK, button_exit, border_radius=25, width=10)
-            self.screen.blit(exit, (button_exit.centerx - 130, button_exit.centery - 75))
+            pygame.draw.rect(self.screen, BLACK, button_leave, border_radius=25, width=10)
+            self.screen.blit(leave, (button_leave.centerx - 130, button_leave.centery - 75))
 
             pygame.draw.rect(self.screen, BLACK, button_leaders, border_radius=25, width=10)
             self.screen.blit(leaders, (button_leaders.centerx - 170, button_leaders.centery - 75))
@@ -320,9 +333,9 @@ class Drawing:
                 if mouse_click[0]:
                     pygame.mouse.set_visible(False)
                     self.menu_trigger = False
-            elif button_exit.collidepoint(mouse_pos):
-                pygame.draw.rect(self.screen, BLACK, button_exit, border_radius=25)
-                self.screen.blit(exit, (button_exit.centerx - 130, button_exit.centery - 75))
+            elif button_leave.collidepoint(mouse_pos):
+                pygame.draw.rect(self.screen, BLACK, button_leave, border_radius=25)
+                self.screen.blit(leave, (button_leave.centerx - 130, button_leave.centery - 75))
                 if mouse_click[0]:
                     pygame.quit()
                     sys.exit()
@@ -342,9 +355,9 @@ class Drawing:
         button_menu = pygame.Rect(0, 0, 370, 111)
         button_menu.center = HALF_WIDTH - 270, HALF_HEIGHT + 250
 
-        exit = button_font.render('Выйти', True, pygame.Color('lightgray'))
-        button_exit = pygame.Rect(0, 0, 370, 111)
-        button_exit.center = HALF_WIDTH + 270, HALF_HEIGHT + 250
+        leave = button_font.render('Выйти', True, pygame.Color('lightgray'))
+        button_leave = pygame.Rect(0, 0, 370, 111)
+        button_leave.center = HALF_WIDTH + 270, HALF_HEIGHT + 250
 
         self.menu_trigger = True
         while self.menu_trigger:
@@ -360,8 +373,8 @@ class Drawing:
             pygame.draw.rect(self.screen, BLACK, button_menu, border_radius=25, width=10)
             self.screen.blit(menu, (button_menu.centerx - 120, button_menu.centery - 75))
 
-            pygame.draw.rect(self.screen, BLACK, button_exit, border_radius=25, width=10)
-            self.screen.blit(exit, (button_exit.centerx - 130, button_exit.centery - 75))
+            pygame.draw.rect(self.screen, BLACK, button_leave, border_radius=25, width=10)
+            self.screen.blit(leave, (button_leave.centerx - 130, button_leave.centery - 75))
 
             label = label_font.render('LightWar', True, (color, color, color))
             self.screen.blit(label, (100, 50))
@@ -372,10 +385,10 @@ class Drawing:
             leaders = self.font.render("ID Никнейм Затраченное время(сек)", True, (0, 0, 0))
             self.screen.blit(leaders, (350, 300))
 
-            for j, row in enumerate(self.data_leaderboard()):
-                id, name, level, time = row
+            for j, row in enumerate(data_leaderboard()):
+                user_id, name, level, time = row
 
-                label_id = self.font.render(str(id), True, (0, 0, 0))
+                label_id = self.font.render(str(user_id), True, (0, 0, 0))
                 screen.blit(label_id, (345, 350 + j * 50))
 
                 label_name = self.font.render(name, True, (0, 0, 0))
@@ -392,21 +405,11 @@ class Drawing:
                 self.screen.blit(menu, (button_menu.centerx - 120, button_menu.centery - 75))
                 if mouse_click[0]:
                     return True
-            elif button_exit.collidepoint(mouse_pos):
-                pygame.draw.rect(self.screen, BLACK, button_exit, border_radius=25)
-                self.screen.blit(exit, (button_exit.centerx - 130, button_exit.centery - 75))
+            elif button_leave.collidepoint(mouse_pos):
+                pygame.draw.rect(self.screen, BLACK, button_leave, border_radius=25)
+                self.screen.blit(leave, (button_leave.centerx - 130, button_leave.centery - 75))
                 if mouse_click[0]:
                     pygame.quit()
                     sys.exit()
             pygame.display.flip()
             self.clock.tick(15)
-
-    def data_leaderboard(self):
-        con = sqlite3.connect('data/LightWar.db')
-        cur = con.cursor()
-        data = cur.execute("""
-                               SELECT * FROM users WHERE highscore = ? ORDER BY time DESC
-                           """, (6,)).fetchall()[:3]
-        con.commit()
-        con.close()
-        return data

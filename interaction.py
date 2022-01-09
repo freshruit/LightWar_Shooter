@@ -45,8 +45,17 @@ def ray_casting_npc_player(npc_x, npc_y, blocked_doors, world_map, player_pos):
     return True
 
 
+def play_music():
+    pygame.mixer.pre_init(44100, -16, 2, 2048)
+    pygame.mixer.init()
+    pygame.mixer.music.load('data/sounds/theme.mp3')
+    pygame.mixer.music.play(10)
+
+
 class Interaction:
     def __init__(self, player, sprites, drawing, screen):
+        self.old_time = 0
+        self.n_adversary = 0
         self.flag_time = True
         self.font = pygame.font.SysFont('Arial', 20, bold=True)
         self.player = player
@@ -96,12 +105,6 @@ class Interaction:
     def clear_world(self):
         deleted_objects = self.sprites.list_of_objects[:]
         [self.sprites.list_of_objects.remove(obj) for obj in deleted_objects if obj.delete]
-
-    def play_music(self):
-        pygame.mixer.pre_init(44100, -16, 2, 2048)
-        pygame.mixer.init()
-        pygame.mixer.music.load('data/sounds/theme.mp3')
-        pygame.mixer.music.play(10)
 
     def check_win(self):
         global total_time

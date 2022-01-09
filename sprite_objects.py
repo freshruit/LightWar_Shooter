@@ -161,6 +161,11 @@ class Sprites(pygame.sprite.Sprite):
 class SpriteObject(pygame.sprite.Sprite):
     def __init__(self, parameters, pos, *groups):
         super().__init__(*groups)
+        self.dead_sprite = 0
+        self.proj_height = 0
+        self.current_ray = 0
+        self.theta = 0
+        self.distance_to_sprite = 0
         self.object = parameters['sprite'].copy()
         self.viewing_angles = parameters['viewing_angles']
         self.shift = parameters['shift']
