@@ -1,3 +1,5 @@
+
+
 import pygame
 import random
 from collections import deque
@@ -11,8 +13,9 @@ from settings import *
 
 
 class Sprites(pygame.sprite.Sprite):
-    def __init__(self, *groups):
+    def __init__(self, screen, *groups):
         super().__init__(*groups)
+
         self.sprite_parameters = {
             'sprite_barrel': {
                 'sprite': load_image('sprites/barrel/base/0.png'),
@@ -161,6 +164,8 @@ class Sprites(pygame.sprite.Sprite):
 class SpriteObject(pygame.sprite.Sprite):
     def __init__(self, parameters, pos, *groups):
         super().__init__(*groups)
+        self.init()
+        self.n_animashon = 0
         self.dead_sprite = 0
         self.proj_height = 0
         self.current_ray = 0
@@ -197,6 +202,10 @@ class SpriteObject(pygame.sprite.Sprite):
                 self.sprite_angles = [frozenset(range(348, 361)) | frozenset(range(0, 11))] + \
                                      [frozenset(range(i, i + 23)) for i in range(11, 348, 23)]
             self.sprite_positions = {angle: pos for angle, pos in zip(self.sprite_angles, self.object)}
+
+    def init(self):
+        global n_shot
+        n_shot = 0
 
     @property
     def is_on_fire(self):
@@ -272,23 +281,35 @@ class SpriteObject(pygame.sprite.Sprite):
         return self.object
 
     def dead_animation(self):
+
         if len(self.death_animation):
             if self.dead_animation_count < self.animation_speed:
                 self.dead_sprite = self.death_animation[0]
                 self.dead_animation_count += 1
+
             else:
+
                 self.dead_sprite = self.death_animation.popleft()
                 self.dead_animation_count = 0
         return self.dead_sprite
 
     def npc_in_action(self):
+        global n_shot
         sprite_object = self.obj_action[0]
+
+
         if self.animation_count < self.animation_speed:
             self.animation_count += 1
+
         else:
+            if '92x' == str(sprite_object)[9:12]:
+                n_shot += random.random()*0.5
+
             self.obj_action.rotate()
             self.animation_count = 0
         return sprite_object
+
+
 
     def open_door(self):
         if self.flag == 'door_h':
@@ -299,3 +320,12 @@ class SpriteObject(pygame.sprite.Sprite):
             self.x -= 3
             if abs(self.x - self.door_prev_pos) > TILE:
                 self.delete = True
+
+
+class cec_n_shot(SpriteObject):
+    def __init__(self):
+        self.init()
+
+    def cec_shot(self):
+        global n_shot
+        return n_shot

@@ -1,19 +1,26 @@
 import pygame
 
 import player_processing
-from sprite_objects import Sprites
+from sprite_objects import Sprites, cec_n_shot
 from player import Player
 from drawing import Drawing, screen, screen_map
 from interaction import Interaction, play_music
 from ray_casting import ray_casting_walls
+from hp_user import user_hp
+
 
 
 def main():
     global user
+
     all_sprites = pygame.sprite.Group()
-    sprites = Sprites()
+    sprites = Sprites(screen)
+    sprites_obgect = cec_n_shot()
     clock = pygame.time.Clock()
     player = Player(sprites)
+
+    user_hp_ecs = user_hp(screen)
+
     drawing = Drawing(screen, screen_map, player, clock)
     if not user:
         username = drawing.enter_name()
@@ -39,16 +46,25 @@ def main():
         interaction.clear_world()
         interaction.check_win()
 
+        user_hp_ecs.apdate_hp(sprites_obgect.cec_shot())
+
         if interaction.check_win():
-            drawing.win()
+            drawing.win_dead(True)
         if player.keys_control():
             main()
         if interaction.win_flag:
-            if drawing.win():
-                user.next_level()
+            if drawing.win_dead(True):
+                n_shot = 0
+                user.next_level(True)
                 main()
-        user.update_player()
 
+        if user_hp_ecs.check_dead():
+            if drawing.win_dead(False):
+                n_shot = 0
+                user.next_level(False)
+                main()
+
+        user.update_player()
         all_sprites.update(screen)
         pygame.display.flip()
         clock.tick()

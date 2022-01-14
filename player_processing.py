@@ -48,10 +48,10 @@ class User:
             con.commit()
             con.close()
 
-    def next_level(self):
+    def next_level(self, win_cek):
         global total_highscore
         if self.highscore < 6:
-            self.highscore += 1
+            self.highscore += win_cek
             total_highscore = self.highscore
             con = sqlite3.connect('data/LightWar.db')
             cur = con.cursor()

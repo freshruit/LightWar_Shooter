@@ -135,14 +135,14 @@ class Drawing:
             self.sfx_length_count += 1
             self.sfx.rotate(-1)
 
-    def win(self):
+    def win_dead(self, condition_life):
         button_font = pygame.font.Font('data/fonts/pixel_font.ttf', 72)
 
-        render = self.font_win.render('Победа!', True, (random.randrange(40, 120), 0, 0))
-        rect = pygame.Rect(0, 0, 1000, 300)
+        render = self.font_win.render(('Победа!' if condition_life else 'Поражение!'), True, (random.randrange(40, 120), 0, 0))
+        rect = pygame.Rect(0, 0, (1000 if condition_life else 1200), 300)
         rect.center = HALF_WIDTH, HALF_HEIGHT
         pygame.draw.rect(self.screen, BLACK, rect, border_radius=50)
-        self.screen.blit(render, (rect.centerx - 330, rect.centery - 140))
+        self.screen.blit(render, (rect.centerx - (330 if condition_life else 500), rect.centery - 140))
 
         menu = button_font.render('Меню', True, pygame.Color('lightgray'))
         button_menu = pygame.Rect(0, 0, 370, 111)
