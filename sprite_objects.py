@@ -302,7 +302,7 @@ class SpriteObject(pygame.sprite.Sprite):
             self.animation_count += 1
 
         else:
-            if '92x' == str(sprite_object)[9:12]:
+            if '92x' == str(sprite_object)[9:12] or '1000' == str(sprite_object)[9:12]:
                 n_shot += random.random()*0.5
 
             self.obj_action.rotate()
