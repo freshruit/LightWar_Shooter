@@ -1,5 +1,4 @@
 import sqlite3
-
 import interaction
 
 total_highscore = 1
@@ -52,6 +51,7 @@ class User:
         global total_highscore
         if self.highscore < 6:
             self.highscore += win_cek
+
             total_highscore = self.highscore
             con = sqlite3.connect('data/LightWar.db')
             cur = con.cursor()
@@ -60,3 +60,6 @@ class User:
                          """, (self.highscore, self.name)).fetchall()
             con.commit()
             con.close()
+
+    def ceak_highscore(self):
+        return self.highscore

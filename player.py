@@ -13,6 +13,7 @@ class Player:
         self.side = 50
         self.rect = pygame.Rect(*player_pos, self.side, self.side)
         self.shot = False
+        self.player_speed = defalt_player_speed
 
     @property
     def pos(self):
@@ -63,20 +64,20 @@ class Player:
         if keys[pygame.K_ESCAPE]:
             return True
         if keys[pygame.K_w]:
-            dx = player_speed * cos_a
-            dy = player_speed * sin_a
+            dx = self.player_speed * cos_a
+            dy = self.player_speed * sin_a
             self.detect_collision(dx, dy)
         if keys[pygame.K_s]:
-            dx = -player_speed * cos_a
-            dy = -player_speed * sin_a
+            dx = -self.player_speed * cos_a
+            dy = -self.player_speed * sin_a
             self.detect_collision(dx, dy)
         if keys[pygame.K_a]:
-            dx = player_speed * sin_a
-            dy = -player_speed * cos_a
+            dx = self.player_speed * sin_a
+            dy = -self.player_speed * cos_a
             self.detect_collision(dx, dy)
         if keys[pygame.K_d]:
-            dx = -player_speed * sin_a
-            dy = player_speed * cos_a
+            dx = -self.player_speed * sin_a
+            dy = self.player_speed * cos_a
             self.detect_collision(dx, dy)
         if keys[pygame.K_LEFT]:
             self.angle -= 0.02
@@ -95,3 +96,7 @@ class Player:
             difference = pygame.mouse.get_pos()[0] - HALF_WIDTH
             pygame.mouse.set_pos((HALF_WIDTH, HALF_HEIGHT))
             self.angle += difference * self.sensitivity
+
+
+    def update_speed(self, speed):
+        self.player_speed = speed

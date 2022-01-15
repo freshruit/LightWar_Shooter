@@ -17,15 +17,16 @@ def main():
     sprites = Sprites(screen)
     sprites_obgect = cec_n_shot()
     clock = pygame.time.Clock()
-    player = Player(sprites)
-
     user_hp_ecs = user_hp(screen)
+    player = Player(sprites)
 
     drawing = Drawing(screen, screen_map, player, clock)
     if not user:
         username = drawing.enter_name()
         user = player_processing.User(username)
         user.add_player()
+    user_hp_ecs.calculation_formula_hp(user.ceak_highscore())
+
     sprites.complication(player_processing.total_highscore)
     drawing.menu()
 
@@ -33,7 +34,9 @@ def main():
     play_music()
     all_sprites.draw(screen)
     while True:
+
         player.movement()
+        player.update_speed(user_hp_ecs.calculation_formula_speed())
         drawing.background(player.angle)
         walls, wall_shot = ray_casting_walls(player, drawing.textures)
         drawing.world(walls + [obj.object_locate(player) for obj in sprites.list_of_objects])
@@ -54,13 +57,11 @@ def main():
             main()
         if interaction.win_flag:
             if drawing.win_dead(True):
-                n_shot = 0
                 user.next_level(True)
                 main()
 
         if user_hp_ecs.check_dead():
             if drawing.win_dead(False):
-                n_shot = 0
                 user.next_level(False)
                 main()
 

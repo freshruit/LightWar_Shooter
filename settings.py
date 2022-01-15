@@ -44,13 +44,13 @@ TEXTURE_SCALE = TEXTURE_WIDTH // TILE
 # Настройки положения игрока
 player_pos = (HALF_WIDTH // 4, HALF_HEIGHT - 50)
 player_angle = 0
-player_speed = 3
+defalt_player_speed = 3
+
 # hp
 n_shot = 0
 amount_user_hp = 10
-
-
 position_hp = (250, 10, 200, 20)
+damage_per_shot = 0.2
 
 # Константы цветов
 WHITE = (255, 255, 255)
@@ -65,5 +65,3 @@ YELLOW = (220, 220, 0)
 SANDY = (244, 164, 96)
 DARKBROWN = (97, 61, 25)
 DARKORANGE = (255, 140, 0)
-
-
