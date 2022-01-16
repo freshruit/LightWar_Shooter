@@ -43,7 +43,8 @@ def data_leaderboard():
 
 
 class Drawing:
-    def __init__(self, screen, screen_map, player, clock):
+    def __init__(self, screen, screen_map, player, clock, sprites):
+        self.sprites = sprites
         self.x = 0
         self.shot_projection = 0
         self.screen = screen
@@ -95,15 +96,28 @@ class Drawing:
         self.screen.blit(render, FPS_POS)
 
     def mini_map(self, player):
+        cords_living_sprites = ([obj.pos_sprate() for obj in self.sprites.list_of_objects
+                                 if obj.flag == 'npc' and not obj.is_dead])
+
         self.screen_map.fill(BLACK)
         map_x, map_y = player.x // MAP_SCALE, player.y // MAP_SCALE
         pygame.draw.line(self.screen_map, YELLOW, (map_x, map_y),
                          (map_x + 12 * math.cos(player.angle),
                           map_y + 12 * math.sin(player.angle)), 2)
-        pygame.draw.circle(self.screen_map, RED, (int(map_x), int(map_y)), 5)
+
+        pygame.draw.circle(self.screen_map, GREEN, (int(map_x), int(map_y)), 5)
+
         for x, y in mini_map:
             pygame.draw.rect(self.screen_map, SANDY, (x, y, MAP_TILE, MAP_TILE))
+        for spr_cords_x, spr_cords_y in cords_living_sprites:
+            pygame.draw.circle(self.screen_map, RED, (spr_cords_x // MAP_SCALE,
+                                                      spr_cords_y // MAP_SCALE), 5)
         self.screen.blit(self.screen_map, MAP_POS)
+
+
+
+
+
 
     def player_weapon(self, shots):
         if self.player.shot:

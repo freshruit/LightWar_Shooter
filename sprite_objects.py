@@ -160,11 +160,16 @@ class Sprites(pygame.sprite.Sprite):
                 blocked_doors[(i, j)] = 0
         return blocked_doors
 
+    def pos_sprate(self):
+        return [spr.pos_sprate() for spr in self.list_of_objects]
+
 
 class SpriteObject(pygame.sprite.Sprite):
     def __init__(self, parameters, pos, *groups):
         super().__init__(*groups)
         self.init()
+
+        self.groups = groups
         self.n_animashon = 0
         self.dead_sprite = 0
         self.proj_height = 0
@@ -309,8 +314,6 @@ class SpriteObject(pygame.sprite.Sprite):
             self.animation_count = 0
         return sprite_object
 
-
-
     def open_door(self):
         if self.flag == 'door_h':
             self.y -= 3
@@ -321,11 +324,10 @@ class SpriteObject(pygame.sprite.Sprite):
             if abs(self.x - self.door_prev_pos) > TILE:
                 self.delete = True
 
+    def pos_sprate(self):
+        return self.x, self.y
 
-class cec_n_shot(SpriteObject):
-    def __init__(self):
-        self.init()
 
-    def cec_shot(self):
-        global n_shot
-        return n_shot
+def cec_shot():
+    global n_shot
+    return n_shot

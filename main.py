@@ -1,12 +1,12 @@
 import pygame
 
 import player_processing
-from sprite_objects import Sprites, cec_n_shot
+from sprite_objects import *
 from player import Player
 from drawing import Drawing, screen, screen_map
 from interaction import Interaction, play_music
 from ray_casting import ray_casting_walls
-from hp_user import user_hp
+from hp_user import *
 
 
 
@@ -15,12 +15,12 @@ def main():
 
     all_sprites = pygame.sprite.Group()
     sprites = Sprites(screen)
-    sprites_obgect = cec_n_shot()
+
     clock = pygame.time.Clock()
     user_hp_ecs = user_hp(screen)
     player = Player(sprites)
 
-    drawing = Drawing(screen, screen_map, player, clock)
+    drawing = Drawing(screen, screen_map, player, clock, sprites)
     if not user:
         username = drawing.enter_name()
         user = player_processing.User(username)
@@ -49,7 +49,7 @@ def main():
         interaction.clear_world()
         interaction.check_win()
 
-        user_hp_ecs.apdate_hp(sprites_obgect.cec_shot())
+        user_hp_ecs.apdate_hp(cec_shot())
 
         if interaction.check_win():
             drawing.win_dead(True)
