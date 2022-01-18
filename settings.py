@@ -19,7 +19,7 @@ MAP_SCALE = 2 * MINIMAP_SCALE
 MAP_TILE = TILE // MAP_SCALE
 MAP_POS = (0, 0)
 
-# Формирования лучей
+# Коэффициенты для формирования лучей
 FOV = math.pi / 3
 HALF_FOV = FOV / 2
 NUM_RAYS = 300
@@ -44,7 +44,13 @@ TEXTURE_SCALE = TEXTURE_WIDTH // TILE
 # Настройки положения игрока
 player_pos = (HALF_WIDTH // 4, HALF_HEIGHT - 50)
 player_angle = 0
-player_speed = 3
+defalt_player_speed = 3
+
+# Настройки для правильного отображения жизни игрока
+n_shot = 0
+amount_user_hp = 10
+position_hp = (250, 10, 200, 20)
+damage_per_shot = 0.2
 
 # Константы цветов
 WHITE = (255, 255, 255)

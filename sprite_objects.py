@@ -10,6 +10,7 @@ from ray_casting import mapping
 from settings import *
 
 
+# Класс, отвечающий за все спрайты и их свойства, использующий для этого словари
 class Sprites(pygame.sprite.Sprite):
     def __init__(self, *groups):
         super().__init__(*groups)
@@ -128,26 +129,31 @@ class Sprites(pygame.sprite.Sprite):
             SpriteObject(self.sprite_parameters['sprite_door_h'], (1.5, 4.5)),
         ]
 
+    # Установление нужного количства спрайтов в зависимости от сложности уровня (1-5)
     def complication(self, score):
         if score == 6:
             score = 5
         for i in range(score * 4):
             self.list_of_objects.append(SpriteObject(self.sprite_parameters['npc_soldier'],
-                                                     (random.uniform(2, 6), random.uniform(2, 6))))
+                                                     (random.uniform(2, 23), random.uniform(2, 15))))
             if i % 2:
                 self.list_of_objects.append(SpriteObject(self.sprite_parameters['sprite_flame'],
-                                                         (random.uniform(2, 10), random.uniform(2, 10))))
+                                                         (random.uniform(2, 23), random.uniform(2, 15))))
             elif i % 3:
                 self.list_of_objects.append(SpriteObject(self.sprite_parameters['npc_devil'],
-                                                         (random.uniform(2, 6), random.uniform(2, 6))))
+                                                         (random.uniform(2, 23), random.uniform(2, 15))))
             elif i % 4:
                 self.list_of_objects.append(SpriteObject(self.sprite_parameters['sprite_barrel'],
-                                                         (random.uniform(2, 10), random.uniform(2, 10))))
+                                                         (random.uniform(2, 23), random.uniform(2, 15))))
 
+    # Метод, проверяющий, пересекается ли луч выстрела с каким-то из спрайтов
+    # (с декоратором свойств @propery)
     @property
     def sprite_shot(self):
         return min([obj.is_on_fire for obj in self.list_of_objects], default=(float('inf'), 0))
 
+    # Метод, осуществляющий своевременное открытие и закрытие ворот в игре
+    # (с декоратором свойств @propery)
     @property
     def blocked_doors(self):
         blocked_doors = Dict.empty(key_type=types.UniTuple(int32, 2), value_type=int32)
@@ -157,10 +163,17 @@ class Sprites(pygame.sprite.Sprite):
                 blocked_doors[(i, j)] = 0
         return blocked_doors
 
+    def sprite_pos(self):
+        return [sprite.sprite_pos() for sprite in self.list_of_objects]
 
+
+# Класс, отвечающий за экземпляры классов спрайтов и их правильное взаимодействие с персонажем
 class SpriteObject(pygame.sprite.Sprite):
     def __init__(self, parameters, pos, *groups):
         super().__init__(*groups)
+        self.zeroing()
+        self.groups = groups
+        self.n_animation = 0
         self.dead_sprite = 0
         self.proj_height = 0
         self.current_ray = 0
@@ -198,16 +211,24 @@ class SpriteObject(pygame.sprite.Sprite):
                                      [frozenset(range(i, i + 23)) for i in range(11, 348, 23)]
             self.sprite_positions = {angle: pos for angle, pos in zip(self.sprite_angles, self.object)}
 
+    # Очистка экрана по заверешении выстрела
+    def zeroing(self):
+        global n_shot
+        n_shot = 0
+
+    # Проверка, был ли осуществлён выстрел
     @property
     def is_on_fire(self):
         if CENTER_RAY - self.side // 2 < self.current_ray < CENTER_RAY + self.side // 2 and self.blocked:
             return self.distance_to_sprite, self.proj_height
         return float('inf'), None
 
+    # Получение текующих координат конкретного спрайта при определённых обстоятельствах
     @property
-    def pos(self):
+    def get_sprite_pos(self):
         return self.x - self.side // 2, self.y - self.side // 2
 
+    # Установление положения спрайта в игровом мире
     def object_locate(self, player):
         dx, dy = self.x - player.x, self.y - player.y
         self.distance_to_sprite = math.sqrt(dx ** 2 + dy ** 2)
@@ -250,6 +271,7 @@ class SpriteObject(pygame.sprite.Sprite):
         else:
             return False,
 
+    # Осуществление анимации спрайтов
     def sprite_animation(self):
         if self.animation and self.distance_to_sprite < self.animation_dist:
             sprite_object = self.animation[0]
@@ -261,6 +283,7 @@ class SpriteObject(pygame.sprite.Sprite):
             return sprite_object
         return self.object
 
+    # Проверка, виден ли пользователю спрайт (от этого зависит здоровье персонажа)
     def visible_sprite(self):
         if self.viewing_angles:
             if self.theta < 0:
@@ -281,15 +304,21 @@ class SpriteObject(pygame.sprite.Sprite):
                 self.dead_animation_count = 0
         return self.dead_sprite
 
+    # Определение типа спрайта и его возвращение
     def npc_in_action(self):
+        global n_shot
         sprite_object = self.obj_action[0]
         if self.animation_count < self.animation_speed:
             self.animation_count += 1
         else:
+            if '92x' == str(sprite_object)[9:12] or '100' == str(sprite_object)[9:12]:
+                n_shot += random.random() * damage_per_shot
+
             self.obj_action.rotate()
             self.animation_count = 0
         return sprite_object
 
+    # Проверка, можно ли открыть дверь игровых ворот
     def open_door(self):
         if self.flag == 'door_h':
             self.y -= 3
@@ -299,3 +328,13 @@ class SpriteObject(pygame.sprite.Sprite):
             self.x -= 3
             if abs(self.x - self.door_prev_pos) > TILE:
                 self.delete = True
+
+    # Возвращение начальной позиции конкретного спрайта
+    def sprite_pos(self):
+        return self.x, self.y
+
+
+# Получение информации о том, что выстрел был произведён
+def make_shot():
+    global n_shot
+    return n_shot

@@ -5,11 +5,13 @@ from settings import *
 from map import WORLD_WIDTH, WORLD_HEIGHT, world_map
 
 
+# Отображение объекта, зная его координаты и масштаб игрового окна
 @njit(fastmath=True, cache=True)
 def mapping(a, b):
     return int(a // TILE) * TILE, int(b // TILE) * TILE
 
 
+# Генерация лучей относительно камеры
 @njit(fastmath=True, cache=True)
 def ray_casting(player_pos, player_angle, world_map):
     casted_walls = []
@@ -57,6 +59,7 @@ def ray_casting(player_pos, player_angle, world_map):
     return casted_walls
 
 
+# Визуальное отображение кубов стен, используя текстуры
 def ray_casting_walls(player, textures):
     casted_walls = ray_casting(player.pos, player.angle, world_map)
     wall_shot = casted_walls[CENTER_RAY][0], casted_walls[CENTER_RAY][2]

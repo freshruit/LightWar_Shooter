@@ -9,12 +9,14 @@ import player_processing
 from settings import *
 from map import mini_map
 
+# Инициализация pygame
 pygame.init()
 screen = pygame.display.set_mode(SIZE)
 screen_map = pygame.Surface(MINIMAP_RES)
 pygame.display.set_caption('Light War')
 
 
+# Функция загрузки изображения
 def load_image(name, colorkey=None):
     fullname = os.path.join('data', name)
     if not os.path.isfile(fullname):
@@ -31,6 +33,7 @@ def load_image(name, colorkey=None):
     return image
 
 
+# Функция парсинга базы данных
 def data_leaderboard():
     con = sqlite3.connect('data/LightWar.db')
     cur = con.cursor()
@@ -42,8 +45,10 @@ def data_leaderboard():
     return data
 
 
+# Класс, реализующий отрисовку всех объектов в игре
 class Drawing:
-    def __init__(self, screen, screen_map, player, clock):
+    def __init__(self, screen, screen_map, player, clock, sprites):
+        self.sprites = sprites
         self.x = 0
         self.shot_projection = 0
         self.screen = screen
@@ -76,6 +81,7 @@ class Drawing:
         self.sfx_length = len(self.sfx)
         self.font = pygame.font.SysFont('Arial', 20, bold=True)
 
+    # Загрузка фонового изображения
     def background(self, angle):
         sky_offset = -10 * math.degrees(angle) % WIDTH
         self.screen.blit(self.textures['S'], (sky_offset, 0))
@@ -83,28 +89,45 @@ class Drawing:
         self.screen.blit(self.textures['S'], (sky_offset + WIDTH, 0))
         pygame.draw.rect(self.screen, DARKGRAY, (0, HALF_HEIGHT, WIDTH, HALF_HEIGHT))
 
+    # Проекция игрового мира, реализуемого в файле ray_casting, на экран пользователя
     def world(self, world_objects):
         for obj in sorted(world_objects, key=lambda n: n[0], reverse=True):
             if obj[0]:
                 _, object, object_pos = obj
                 self.screen.blit(object, object_pos)
 
+    # Отображение fps в углу экрана
     def fps(self, clock):
         display_fps = str(int(clock.get_fps()))
         render = self.fps_font.render(f"FPS:{display_fps}", False, DARKORANGE)
         self.screen.blit(render, FPS_POS)
 
+    # Надпись "Здоровье" под счётчиком здоровья
+    def health(self):
+        render = self.fps_font.render("Здоровье", False, RED)
+        self.screen.blit(render, (250, 30))
+
+    # "Склейка" мини-карты с игровым миром
     def mini_map(self, player):
+        cords_living_sprites = ([obj.sprite_pos() for obj in self.sprites.list_of_objects
+                                 if obj.flag == 'npc' and not obj.is_dead])
+
         self.screen_map.fill(BLACK)
         map_x, map_y = player.x // MAP_SCALE, player.y // MAP_SCALE
         pygame.draw.line(self.screen_map, YELLOW, (map_x, map_y),
                          (map_x + 12 * math.cos(player.angle),
                           map_y + 12 * math.sin(player.angle)), 2)
-        pygame.draw.circle(self.screen_map, RED, (int(map_x), int(map_y)), 5)
+
+        pygame.draw.circle(self.screen_map, GREEN, (int(map_x), int(map_y)), 5)
+
         for x, y in mini_map:
             pygame.draw.rect(self.screen_map, SANDY, (x, y, MAP_TILE, MAP_TILE))
+        for spr_cords_x, spr_cords_y in cords_living_sprites:
+            pygame.draw.circle(self.screen_map, RED, (spr_cords_x // MAP_SCALE,
+                                                      spr_cords_y // MAP_SCALE), 5)
         self.screen.blit(self.screen_map, MAP_POS)
 
+    # Нанесение оружие на экран пользователя
     def player_weapon(self, shots):
         if self.player.shot:
             if not self.shot_length_count:
@@ -127,6 +150,7 @@ class Drawing:
         else:
             self.screen.blit(self.weapon_base_sprite, self.weapon_pos)
 
+    # Разметка места выстрела пользователем
     def bullet_sfx(self):
         if self.sfx_length_count < self.sfx_length:
             sfx = pygame.transform.scale(self.sfx[0], (self.shot_projection, self.shot_projection))
@@ -135,14 +159,16 @@ class Drawing:
             self.sfx_length_count += 1
             self.sfx.rotate(-1)
 
-    def win(self):
+    # Метод для выведения сообщения о победе или поражения пользователя
+    def win_or_dead_message(self, condition_life):
         button_font = pygame.font.Font('data/fonts/pixel_font.ttf', 72)
 
-        render = self.font_win.render('Победа!', True, (random.randrange(40, 120), 0, 0))
-        rect = pygame.Rect(0, 0, 1000, 300)
+        render = self.font_win.render(('Победа!' if condition_life else 'Поражение!'), True,
+                                      (random.randrange(40, 120), 0, 0))
+        rect = pygame.Rect(0, 0, (1000 if condition_life else 1200), 300)
         rect.center = HALF_WIDTH, HALF_HEIGHT
         pygame.draw.rect(self.screen, BLACK, rect, border_radius=50)
-        self.screen.blit(render, (rect.centerx - 330, rect.centery - 140))
+        self.screen.blit(render, (rect.centerx - (330 if condition_life else 500), rect.centery - 140))
 
         menu = button_font.render('Меню', True, pygame.Color('lightgray'))
         button_menu = pygame.Rect(0, 0, 370, 111)
@@ -182,6 +208,7 @@ class Drawing:
             pygame.display.flip()
             self.clock.tick(15)
 
+    # Метод для ввода никнейма перед загрузкой меню
     def enter_name(self):
         image = load_image('textures/background.jpg')
         name = ""
@@ -276,6 +303,7 @@ class Drawing:
             pygame.display.update()
         pygame.quit()
 
+    # Функция для виртуализации меню
     def menu(self):
         self.x = 0
         button_font = pygame.font.Font('data/fonts/pixel_font.ttf', 72)
@@ -347,17 +375,14 @@ class Drawing:
             pygame.display.flip()
             self.clock.tick(20)
 
+    # Метод для виртуализации таблицы лидеров при нажатии кнопки "Лидеры" в главном меню
     def make_leaderboard(self):
         button_font = pygame.font.Font('data/fonts/pixel_font.ttf', 72)
         label_font = pygame.font.Font('data/fonts/cyberpunk_font.ttf', 168)
 
-        menu = button_font.render('Меню', True, pygame.Color('lightgray'))
-        button_menu = pygame.Rect(0, 0, 370, 111)
-        button_menu.center = HALF_WIDTH - 270, HALF_HEIGHT + 250
-
-        leave = button_font.render('Выйти', True, pygame.Color('lightgray'))
-        button_leave = pygame.Rect(0, 0, 370, 111)
-        button_leave.center = HALF_WIDTH + 270, HALF_HEIGHT + 250
+        back = button_font.render('Назад', True, pygame.Color('lightgray'))
+        button_back = pygame.Rect(0, 0, 370, 111)
+        button_back.center = HALF_WIDTH + 400, HALF_HEIGHT + 333
 
         self.menu_trigger = True
         while self.menu_trigger:
@@ -370,16 +395,14 @@ class Drawing:
             self.screen.blit(self.menu_picture, (0, 0), (self.x % WIDTH, HALF_HEIGHT, WIDTH, HEIGHT))
             self.x += 1
 
-            pygame.draw.rect(self.screen, BLACK, button_menu, border_radius=25, width=10)
-            self.screen.blit(menu, (button_menu.centerx - 120, button_menu.centery - 75))
-
-            pygame.draw.rect(self.screen, BLACK, button_leave, border_radius=25, width=10)
-            self.screen.blit(leave, (button_leave.centerx - 130, button_leave.centery - 75))
+            pygame.draw.rect(self.screen, BLACK, button_back, border_radius=25, width=10)
+            self.screen.blit(back, (button_back.centerx - 140, button_back.centery - 75))
 
             label = label_font.render('LightWar', True, (color, color, color))
             self.screen.blit(label, (100, 50))
 
-            warning = self.font.render("В таблицу лидеров попадют игроки, прошедшие игру!", True, (0, 0, 0))
+            warning = self.font.render("В таблицу лидеров попадют игроки, прошедшие 5-ый уровень!",
+                                       True, (0, 0, 0))
             self.screen.blit(warning, (350, 270))
 
             leaders = self.font.render("ID Никнейм Затраченное время(сек)", True, (0, 0, 0))
@@ -400,16 +423,10 @@ class Drawing:
             mouse_pos = pygame.mouse.get_pos()
             mouse_click = pygame.mouse.get_pressed()
             pygame.mouse.set_visible(True)
-            if button_menu.collidepoint(mouse_pos):
-                pygame.draw.rect(self.screen, BLACK, button_menu, border_radius=25)
-                self.screen.blit(menu, (button_menu.centerx - 120, button_menu.centery - 75))
+            if button_back.collidepoint(mouse_pos):
+                pygame.draw.rect(self.screen, BLACK, button_back, border_radius=25)
+                self.screen.blit(back, (button_back.centerx - 140, button_back.centery - 75))
                 if mouse_click[0]:
                     return True
-            elif button_leave.collidepoint(mouse_pos):
-                pygame.draw.rect(self.screen, BLACK, button_leave, border_radius=25)
-                self.screen.blit(leave, (button_leave.centerx - 130, button_leave.centery - 75))
-                if mouse_click[0]:
-                    pygame.quit()
-                    sys.exit()
             pygame.display.flip()
             self.clock.tick(15)
