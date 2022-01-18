@@ -10,6 +10,7 @@ from map import world_map
 total_time = 0
 
 
+# Проекция лучей от камеры к случайной точке движущихся спрайтов
 @njit(fastmath=True, cache=True)
 def ray_casting_npc_player(npc_x, npc_y, blocked_doors, world_map, player_pos):
     ox, oy = player_pos
@@ -45,6 +46,7 @@ def ray_casting_npc_player(npc_x, npc_y, blocked_doors, world_map, player_pos):
     return True
 
 
+# Функция для проигрывания фоновой музыки
 def play_music():
     pygame.mixer.pre_init(44100, -16, 2, 2048)
     pygame.mixer.init()
@@ -52,6 +54,7 @@ def play_music():
     pygame.mixer.music.play(10)
 
 
+# Класс, реализующий взаимодействие игрока со всеми спрайтами
 class Interaction:
     def __init__(self, player, sprites, drawing, screen):
         self.old_time = 0
@@ -66,6 +69,7 @@ class Interaction:
         self.flag_adversary = True
         self.pain_sound = pygame.mixer.Sound('data/sounds/pain.mp3')
 
+    # Метод, проверяющий, к какому классу отнести спрайт
     def interaction_objects(self):
         if self.player.shot and self.drawing.shot_animation_trigger:
             for obj in sorted(self.sprites.list_of_objects, key=lambda obj: obj.distance_to_sprite):
@@ -84,6 +88,7 @@ class Interaction:
                         obj.blocked = None
                     break
 
+    # Метод, проверяющий, можно ли двигаться в направлении, запрашиваемом игроком
     def npc_action(self):
         for obj in self.sprites.list_of_objects:
             if obj.flag == 'npc' and not obj.is_dead:
@@ -95,6 +100,7 @@ class Interaction:
                 else:
                     obj.npc_action_trigger = False
 
+    # Осуществление перемещения спрайтов в сторону игрока
     def npc_move(self, obj):
         if abs(obj.distance_to_sprite) > TILE:
             dx = obj.x - self.player.pos[0]
@@ -102,10 +108,12 @@ class Interaction:
             obj.x = obj.x + 1 if dx < 0 else obj.x - 1
             obj.y = obj.y + 1 if dy < 0 else obj.y - 1
 
+    # Очистка мира для загрузки следующего уровня
     def clear_world(self):
         deleted_objects = self.sprites.list_of_objects[:]
         [self.sprites.list_of_objects.remove(obj) for obj in deleted_objects if obj.delete]
 
+    # Проверка, все ли спрайты уничтожены (возможно ли завершить игру)
     def check_win(self):
         global total_time
         count_living_sprites = len([obj for obj in self.sprites.list_of_objects

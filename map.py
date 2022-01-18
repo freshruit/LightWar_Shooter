@@ -5,10 +5,18 @@ from numba.typed import Dict
 
 from settings import *
 
+# Генерация карты как словаря, где ключами являются координаты,
+# а значениями массивы из данных о каждой точке игрового мира
 world_map = Dict.empty(key_type=types.UniTuple(int32, 2), value_type=int32)
+
+# Проекция игрового мира сверху вниз в виде мини-карты в левом верхнем углу экрана
 mini_map = set()
+
+# Запись координат, на которые персонаж физически не сможет ступить (стены)
 collision_walls = []
-with open(f"data/levels/{1}.txt") as level:
+
+# Открытие файла уровня и проход по нему
+with open("data/levels/map.txt") as level:
     matrix_map = [[int(i) for i in row if i != '\n'] for row in level]
     WORLD_WIDTH = len(matrix_map[0]) * TILE
     WORLD_HEIGHT = len(matrix_map) * TILE
