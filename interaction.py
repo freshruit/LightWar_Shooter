@@ -34,7 +34,7 @@ def ray_casting_npc_player(npc_x, npc_y, blocked_doors, world_map, player_pos):
             return False
         x += dx * TILE
 
-    # Горизонатльная виртуализация интерактивных спрайтов
+    # Горизонтальная виртуализация интерактивных спрайтов
     y, dy = (ym + TILE, 1) if sin_a >= 0 else (ym, -1)
     for i in range(0, int(abs(delta_y)) // TILE):
         depth_h = (y - oy) / sin_a

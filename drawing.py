@@ -404,14 +404,14 @@ class Drawing:
             label = label_font.render('LightWar', True, (color, color, color))
             self.screen.blit(label, (100, 50))
 
-            warning = self.font.render("В таблицу лидеров попадют игроки, прошедшие 5-ый уровень!",
+            warning = self.font.render("В таблицу лидеров попадают игроки, прошедшие 5-ый уровень!",
                                        True, (0, 0, 0))
             self.screen.blit(warning, (350, 270))
 
             leaders = self.font.render("ID Никнейм Затраченное время(сек)", True, (0, 0, 0))
             self.screen.blit(leaders, (350, 300))
 
-            for j, row in enumerate(data_leaderboard()):
+            for j, row in enumerate(data_leaderboard()[::-1]):
                 user_id, name, level, time = row
 
                 label_id = self.font.render(str(user_id), True, (0, 0, 0))

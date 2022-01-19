@@ -9,13 +9,13 @@ def calculate_hp(n_level):
     global amount_user_hp
     if n_level == 1:
         amount_user_hp = 20
-    if n_level == 2:
+    elif n_level == 2:
         amount_user_hp = 25
-    if n_level == 3:
+    elif n_level == 3:
         amount_user_hp = 40
-    if n_level == 4:
+    elif n_level == 4:
         amount_user_hp = 50
-    if n_level == 5 or n_level == 6:
+    elif n_level == 5 or n_level == 6:
         amount_user_hp = 50
 
 
@@ -57,7 +57,7 @@ class UserHP:
                         sys.exit()
                 return True
 
-    # Расчёт скорости персонажа (уменьшается пропорциально здоровью)
+    # Расчёт скорости персонажа (уменьшается пропорционально здоровью)
     def calculate_speed(self):
         speed = int(self.n_hp / amount_user_hp * 3) + 1
         return speed
