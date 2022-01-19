@@ -44,7 +44,7 @@ TEXTURE_SCALE = TEXTURE_WIDTH // TILE
 # Настройки положения игрока
 player_pos = (HALF_WIDTH // 4, HALF_HEIGHT - 50)
 player_angle = 0
-defalt_player_speed = 3
+default_player_speed = 3
 
 # Настройки для правильного отображения жизни игрока
 n_shot = 0

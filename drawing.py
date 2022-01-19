@@ -404,7 +404,7 @@ class Drawing:
             label = label_font.render('LightWar', True, (color, color, color))
             self.screen.blit(label, (100, 50))
 
-            warning = self.font.render("В таблицу лидеров попадют игроки, прошедшие 5-ый уровень!",
+            warning = self.font.render("В таблицу лидеров попадают игроки, прошедшие 5-ый уровень!",
                                        True, (0, 0, 0))
             self.screen.blit(warning, (350, 270))
 
