@@ -102,6 +102,11 @@ class Drawing:
         render = self.fps_font.render(f"FPS:{display_fps}", False, DARKORANGE)
         self.screen.blit(render, FPS_POS)
 
+    # Надпись "Здоровье" под счётчиком здоровья
+    def health(self):
+        render = self.fps_font.render("Здоровье", False, RED)
+        self.screen.blit(render, (250, 30))
+
     # "Склейка" мини-карты с игровым миром
     def mini_map(self, player):
         cords_living_sprites = ([obj.sprite_pos() for obj in self.sprites.list_of_objects
@@ -375,13 +380,9 @@ class Drawing:
         button_font = pygame.font.Font('data/fonts/pixel_font.ttf', 72)
         label_font = pygame.font.Font('data/fonts/cyberpunk_font.ttf', 168)
 
-        menu = button_font.render('Меню', True, pygame.Color('lightgray'))
-        button_menu = pygame.Rect(0, 0, 370, 111)
-        button_menu.center = HALF_WIDTH - 270, HALF_HEIGHT + 250
-
-        leave = button_font.render('Выйти', True, pygame.Color('lightgray'))
-        button_leave = pygame.Rect(0, 0, 370, 111)
-        button_leave.center = HALF_WIDTH + 270, HALF_HEIGHT + 250
+        back = button_font.render('Назад', True, pygame.Color('lightgray'))
+        button_back = pygame.Rect(0, 0, 370, 111)
+        button_back.center = HALF_WIDTH + 400, HALF_HEIGHT + 333
 
         self.menu_trigger = True
         while self.menu_trigger:
@@ -394,11 +395,8 @@ class Drawing:
             self.screen.blit(self.menu_picture, (0, 0), (self.x % WIDTH, HALF_HEIGHT, WIDTH, HEIGHT))
             self.x += 1
 
-            pygame.draw.rect(self.screen, BLACK, button_menu, border_radius=25, width=10)
-            self.screen.blit(menu, (button_menu.centerx - 120, button_menu.centery - 75))
-
-            pygame.draw.rect(self.screen, BLACK, button_leave, border_radius=25, width=10)
-            self.screen.blit(leave, (button_leave.centerx - 130, button_leave.centery - 75))
+            pygame.draw.rect(self.screen, BLACK, button_back, border_radius=25, width=10)
+            self.screen.blit(back, (button_back.centerx - 140, button_back.centery - 75))
 
             label = label_font.render('LightWar', True, (color, color, color))
             self.screen.blit(label, (100, 50))
@@ -425,16 +423,10 @@ class Drawing:
             mouse_pos = pygame.mouse.get_pos()
             mouse_click = pygame.mouse.get_pressed()
             pygame.mouse.set_visible(True)
-            if button_menu.collidepoint(mouse_pos):
-                pygame.draw.rect(self.screen, BLACK, button_menu, border_radius=25)
-                self.screen.blit(menu, (button_menu.centerx - 120, button_menu.centery - 75))
+            if button_back.collidepoint(mouse_pos):
+                pygame.draw.rect(self.screen, BLACK, button_back, border_radius=25)
+                self.screen.blit(back, (button_back.centerx - 140, button_back.centery - 75))
                 if mouse_click[0]:
                     return True
-            elif button_leave.collidepoint(mouse_pos):
-                pygame.draw.rect(self.screen, BLACK, button_leave, border_radius=25)
-                self.screen.blit(leave, (button_leave.centerx - 130, button_leave.centery - 75))
-                if mouse_click[0]:
-                    pygame.quit()
-                    sys.exit()
             pygame.display.flip()
             self.clock.tick(15)

@@ -61,6 +61,7 @@ def main():
         # Постоянное обновление мини-карты, счётчика fps и убийств
         drawing.world(walls + [obj.object_locate(player) for obj in sprites.list_of_objects])
         drawing.fps(clock)
+        drawing.health()
         drawing.mini_map(player)
         drawing.player_weapon([wall_shot, sprites.sprite_shot])
 
