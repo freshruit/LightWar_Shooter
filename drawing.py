@@ -275,6 +275,9 @@ class Drawing:
                         name += "v"
                     elif event.key == pygame.K_i:
                         name += "i"
+                    elif event.key == pygame.K_ESCAPE:
+                        pygame.quit()
+                        sys.exit()
                     elif event.key == pygame.K_RETURN:
                         screen.fill((0, 0, 0))
                         return name
