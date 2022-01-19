@@ -10,13 +10,13 @@ def calculate_hp(n_level):
     if n_level == 1:
         amount_user_hp = 20
     if n_level == 2:
-        amount_user_hp = 30
+        amount_user_hp = 25
     if n_level == 3:
         amount_user_hp = 40
     if n_level == 4:
         amount_user_hp = 50
-    if n_level == 5:
-        amount_user_hp = 60
+    if n_level == 5 or n_level == 6:
+        amount_user_hp = 50
 
 
 # Класс для изменения здоровья персонажа на экране пользователя
