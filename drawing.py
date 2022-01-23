@@ -39,10 +39,10 @@ def data_leaderboard():
     cur = con.cursor()
     data = cur.execute("""
                            SELECT * FROM users WHERE highscore = ? ORDER BY time DESC
-                       """, (6,)).fetchall()[:3]
+                       """, (6,)).fetchall()
     con.commit()
     con.close()
-    return data
+    return data[::-1][:3]
 
 
 # Класс, реализующий отрисовку всех объектов в игре
